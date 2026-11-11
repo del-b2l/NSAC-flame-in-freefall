@@ -1,0 +1,52 @@
+[
+  {
+    "id": "saffire-iv-1",
+    "investigation": "Saffire-IV",
+    "material": "SIBAL cloth, 50 cm",
+    "oxygen_pct": 22.0,
+    "pressure_psi": 14.5,
+    "airflow": "20 cm/s concurrent",
+    "result": "Burn 130 s; total fuel-calorimetry heat release 409 kJ; max temp 45 C at SFU outlet, 25 C at FFD; CO2 rise 1390 ppm; CO rise 80 ppm",
+    "source_url": "https://ntrs.nasa.gov/citations/20240007488"
+  },
+  {
+    "id": "saffire-v-2",
+    "investigation": "Saffire-V",
+    "material": "Cotton jersey, 50 cm",
+    "oxygen_pct": 26.2,
+    "pressure_psi": 10.3,
+    "airflow": "20 cm/s concurrent",
+    "result": "Burn 200 s; total fuel-calorimetry heat release 560 kJ; max temp 46 C at SFU outlet, 23 C at FFD; CO2 rise 2360 ppm; CO rise 83 ppm",
+    "source_url": "https://ntrs.nasa.gov/citations/20240007488"
+  },
+  {
+    "id": "saffire-vi-2",
+    "investigation": "Saffire-VI",
+    "material": "SIBAL cloth, 50 cm",
+    "oxygen_pct": 31.0,
+    "pressure_psi": 7.9,
+    "airflow": "20 cm/s concurrent",
+    "result": "Burn 112 s; O2-calorimetry total 580 kJ (peak 3217 W); max temp 48 C at SFU outlet, 20 C at FFD; CO2 rise 2800 ppm; CO rise 120 ppm",
+    "source_url": "https://ntrs.nasa.gov/citations/20240007488"
+  },
+  {
+    "id": "saffire-vi-3",
+    "investigation": "Saffire-VI",
+    "material": "Two-sided PMMA, 1 cm thick, 18 cm",
+    "oxygen_pct": 30.3,
+    "pressure_psi": 7.9,
+    "airflow": "20 cm/s concurrent, cut to 5 cm/s at 1120 s",
+    "result": "Burn 780 s; O2-calorimetry total 1280 kJ (peak 3080 W); max temp 77 C at SFU outlet, 21 C at FFD; CO2 rise 8539 ppm; CO rise 308 ppm",
+    "source_url": "https://ntrs.nasa.gov/citations/20240007488"
+  },
+  {
+    "id": "saffire-vi-4",
+    "investigation": "Saffire-VI",
+    "material": "One-sided PMMA, 0.5 cm thick, 18 cm",
+    "oxygen_pct": 28.8,
+    "pressure_psi": 8.0,
+    "airflow": "20 cm/s concurrent",
+    "result": "Burn 1200 s; O2-calorimetry total 830 kJ (peak 1507 W); max temp 57 C at SFU outlet, 21 C at FFD; CO2 rise 8117 ppm; CO rise 320 ppm",
+    "source_url": "https://ntrs.nasa.gov/citations/20240007488"
+  }
+]
