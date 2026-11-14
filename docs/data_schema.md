@@ -15,6 +15,7 @@ One record is one test: one row of a NASA test matrix, or one run of one experim
 | `pressure_psi` | number or null | no | Total ambient pressure, in psi | `7.9` |
 | `airflow` | string or null | no | Air speed and direction | `20 cm/s concurrent` |
 | `result` | string or null | no | Short outcome, copied from the source | `Burn 780 s; O2-calorimetry total 1280 kJ` |
+| `conditions` | object or {} | yes | Every other column from the source table, header text unchanged | {"Fuel": "Ethylene"}
 | `source_url` | string or null | yes in practice | Link to the page or file the values came from | `https://ntrs.nasa.gov/citations/20240007488` |
 
 ### Rules
