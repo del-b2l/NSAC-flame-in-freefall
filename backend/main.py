@@ -19,6 +19,9 @@ app.include_router(explain_router)
 from backend.safety import router as safety_router
 app.include_router(safety_router)
 
+from backend.brief import router as brief_router
+app.include_router(brief_router)
+
 @app.get("/health")
 def health():
     return {"status": "ok"}

@@ -66,3 +66,66 @@ def rank_tests(tests: list[TestRecord], habitat: Habitat) -> list[TestRecord]:
     The input list is not modified.
     """
     return sorted(tests, key=lambda test: _sort_key(test, habitat))
+
+# Batool's edit to match the decided tiering system.
+
+def rank_tests_by_tier(tests: list[TestRecord], habitat: Habitat) -> list[dict]:
+    """Rank tests by measurement completeness, then distance."""
+
+    results = []
+
+    for test in tests:
+        has_oxygen = test.oxygen_pct is not None
+        has_pressure = test.pressure_psi is not None
+
+        if has_oxygen and has_pressure:
+            tier = 1
+            scored_on = ["oxygen_pct", "pressure_psi"]
+            label = "scored on oxygen and pressure"
+
+        elif has_oxygen:
+            tier = 2
+            scored_on = ["oxygen_pct"]
+            label = "scored on oxygen only"
+
+        elif has_pressure:
+            tier = 2
+            scored_on = ["pressure_psi"]
+            label = "scored on pressure only"
+
+        else:
+            tier = 3
+            scored_on = []
+            label = "not scored"
+
+        distance = None
+
+        if has_oxygen:
+            distance = abs(test.oxygen_pct - habitat.oxygen_pct)
+
+        if has_pressure:
+            pressure_difference = abs(
+                test.pressure_psi - habitat.pressure_psi
+            )
+            distance = (
+                pressure_difference
+                if distance is None
+                else distance + pressure_difference
+            )
+
+        results.append({
+            "test": test,
+            "tier": tier,
+            "scored_on": scored_on,
+            "distance": distance,
+            "label": label,
+        })
+
+    return sorted(
+        results,
+        key=lambda result: (
+            result["tier"],
+            result["distance"] if result["distance"] is not None else 0,
+            result["test"].id,
+        ),
+    )

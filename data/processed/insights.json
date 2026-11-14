@@ -38,5 +38,10 @@
       "source_label": "NASA Spinoff: New Technology for the Fire Attire",
       "source_url": "https://spinoff.nasa.gov/node/9918"
     }
-  ]
+  ],
+  "control_need": {
+    "text": "Detection came after most of the hazardous gas release, which suggests a need to detect gases earlier than smoke alone.",
+    "status": "team interpretation",
+    "basis_url": "https://ntrs.nasa.gov/citations/20240007488"
+  }
 }

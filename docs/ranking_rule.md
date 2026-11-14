@@ -1,17 +1,28 @@
-# Ranking rule
+# Ranking rules
 
-Owner: Shaheer. Code: `backend/ranking.py`. Tests: `backend/tests/test_ranking.py`.
-If this document and the code disagree, one of them is a bug and the pull
-request that changes it must change both.
+There are two ranking methods in this project:
 
-## In plain words
+- **Original ranking (`rank_tests`)** — owned by Shaheer, implemented in
+  `backend/ranking.py`, and used by the `/rank` endpoint. It ranks tests by
+  oxygen and pressure distance, with airflow as a tie-breaker.
+- **Tier-based ranking (`rank_tests_by_tier`)** — used by the `/brief`
+  endpoint. It prioritises tests according to how many measurements are
+  available.
 
-When a user picks a habitat, every NASA test is sorted so that the tests whose
-air is closest to that habitat appear first.
+These methods serve different purposes. Changes to one should not silently
+change the behaviour of the other.
 
-"Closest" means two numbers are compared: oxygen % and pressure (psi). A test
-whose oxygen and pressure are near the habitat's values ranks higher than one
-that is far away.
+## Tier-based ranking for `/brief`
+
+When a user selects a habitat, tests are grouped into three tiers according
+to the availability of their oxygen and pressure measurements.
+
+- **Tier 1:** Both oxygen and pressure are available.
+- **Tier 2:** Only one measurement is available.
+- **Tier 3:** Neither measurement is available.
+
+Within each tier, tests with the smallest available distance appear first.
+Tests are never given invented or inferred measurement values.
 
 ## The rule
 
