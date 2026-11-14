@@ -8,9 +8,8 @@ rebuild from the raw PSI files skip themselves when `data/raw/psi/` is absent
 import json
 from pathlib import Path
 
-import pytest
-
 import build_tests
+import pytest
 from build_tests import Source, build_record, parse_number, parse_pressure, to_psi
 
 ROOT = Path(__file__).resolve().parents[2]

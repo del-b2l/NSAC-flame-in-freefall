@@ -27,7 +27,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 BASE = "https://psi.nasa.gov"
@@ -148,7 +148,7 @@ def main(argv: list[str] | None = None) -> int:
             downloaded += 1
             time.sleep(PAUSE_SECONDS)
 
-        entry["fetched_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        entry["fetched_at"] = datetime.now(UTC).isoformat(timespec="seconds")
         manifest["investigations"][accession] = entry
         print(f"[{accession}] {record.get('investigationAcronym') or '?':<14} "
               f"{len(tables)} table(s)")
