@@ -5,6 +5,8 @@ Owner: Shaheer. The rule these tests check is written out in
 bug and the PR that changes it has to change both.
 """
 
+import math
+
 import pytest
 
 from backend.data_loader import load_habitats, load_tests
@@ -172,15 +174,27 @@ def test_real_data_keeps_unscored_tests_at_the_bottom():
             assert ranked[-len(unscored) :] == unscored
 
 
-def test_real_data_distances_never_go_backwards():
+def test_real_data_distance_bands_never_go_backwards():
+    """Airflow may reorder a 0.5-wide band, but never across bands.
+
+    Within one band the rule promotes a test that documents its airflow, so two
+    neighbours can be 0.4 apart and out of order. Across bands the distance must
+    still rise, which is what "closer air ranks higher" means for the user.
+    """
     tests = load_tests()
     for habitat in load_habitats():
-        distances = [
-            _distance(t, habitat)
-            for t in rank_tests(tests, habitat)
-            if t.oxygen_pct is not None and t.pressure_psi is not None
-        ]
-        assert distances == sorted(distances)
+        ranked = rank_tests(tests, habitat)
+        scored = [t for t in ranked if t.oxygen_pct is not None and t.pressure_psi is not None]
+        bands = [math.floor(_distance(t, habitat) / 0.5) for t in scored]
+        assert bands == sorted(bands), habitat.name
+
+        # A test further away by 0.5 or more is always further down the list.
+        positions = {t.id: index for index, t in enumerate(scored)}
+        distances = {t.id: _distance(t, habitat) for t in scored}
+        for near in scored:
+            for far in scored:
+                if distances[far.id] > distances[near.id] + 0.5:
+                    assert positions[near.id] < positions[far.id], (habitat.name, near.id, far.id)
 
 
 def test_real_saffire_order_for_the_moon_base():
