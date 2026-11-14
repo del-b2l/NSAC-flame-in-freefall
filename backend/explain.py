@@ -6,7 +6,7 @@ import httpx
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 
-from backend.data_loader import load_tests, load_demo_answers
+from backend.data_loader import load_demo_answers, load_tests
 
 load_dotenv()
 router = APIRouter()
@@ -53,7 +53,7 @@ def _ask_gemini(record_json: str) -> str | None:
             print(f"[explain] Gemini returned {r.status_code}: {r.text[:300]}")
             return None
         return r.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
-    except Exception as e:
+    except (httpx.HTTPError, KeyError, IndexError, TypeError, ValueError) as e:
         print(f"[explain] request failed: {type(e).__name__}: {e}")
         return None
 

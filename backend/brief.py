@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from backend.data_loader import load_tests, load_habitats, load_insights
+
+from backend.data_loader import load_habitats, load_insights, load_tests
 from backend.ranking import rank_tests_by_tier
 
 router = APIRouter()

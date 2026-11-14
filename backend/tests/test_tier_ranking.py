@@ -1,6 +1,7 @@
 import pytest
 
-from backend.models import Habitat, TestRecord as NASARecord
+from backend.models import Habitat
+from backend.models import TestRecord as NASARecord
 from backend.ranking import rank_tests_by_tier
 
 

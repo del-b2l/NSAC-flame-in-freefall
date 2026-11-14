@@ -4,9 +4,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from backend.catalog import catalog, text_of  # noqa: E402
-from backend.data_loader import PROCESSED  # noqa: E402
-from backend.embed import embed  # noqa: E402
+from backend.catalog import catalog, text_of
+from backend.data_loader import PROCESSED
+from backend.embed import embed
 
 cat = catalog()
 ids = list(cat)

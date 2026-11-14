@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from backend.data_loader import load_tests, load_habitats, load_safety, load_insights
+
+from backend.data_loader import load_habitats, load_insights, load_safety, load_tests
 from backend.models import RankRequest
 from backend.ranking import rank_tests
 
@@ -14,21 +15,27 @@ app.add_middleware(
 )
 
 from backend.explain import router as explain_router
+
 app.include_router(explain_router)
 
 from backend.safety import router as safety_router
+
 app.include_router(safety_router)
 
 from backend.brief import router as brief_router
+
 app.include_router(brief_router)
 
 from backend.investigations import router as investigations_router
+
 app.include_router(investigations_router)
 
 from backend.earth_use import router as earth_use_router
+
 app.include_router(earth_use_router)
 
 from backend.qa import router as qa_router
+
 app.include_router(qa_router)
 
 @app.get("/health")

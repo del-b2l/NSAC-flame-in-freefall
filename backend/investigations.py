@@ -1,5 +1,4 @@
 import json
-from typing import Optional
 
 from fastapi import APIRouter
 
@@ -16,7 +15,7 @@ def _load(name: str, default):
 
 
 @router.get("/investigations")
-def investigations(category: Optional[str] = None):
+def investigations(category: str | None = None):
     items = _load("investigations.json", [])
     tags = _load("investigation_tags.json", [])
     if isinstance(tags, dict):

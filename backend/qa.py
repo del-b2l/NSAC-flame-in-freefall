@@ -1,23 +1,21 @@
 import json
 import os
 import re
-from typing import Optional
 
 import httpx
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from backend.data_loader import load_habitats, load_insights, load_tests, read_processed
-from backend.ranking import rank_tests
 from backend.catalog import catalog
+from backend.data_loader import load_habitats, load_insights, load_tests, read_processed
 from backend.embed import search
+from backend.ranking import rank_tests
 
 load_dotenv()
 router = APIRouter()
 
-STOP = set("the and for are was were what which how does did with from that this can who when where why you "
-           "flame flames fire test tests experiment experiments combustion".split())
+STOP = {"the", "and", "for", "are", "was", "were", "what", "which", "how", "does", "did", "with", "from", "that", "this", "can", "who", "when", "where", "why", "you", "flame", "flames", "fire", "test", "tests", "experiment", "experiments", "combustion"}
 CITE = re.compile(r"\[([^\[\]]+)\]")
 NUM = re.compile(r"\d+(?:\.\d+)?")
 REFUSAL = "I can't answer that from the records."
@@ -41,7 +39,7 @@ Records:
 
 class QARequest(BaseModel):
     question: str
-    habitat: Optional[str] = None
+    habitat: str | None = None
 
 
 def _tokens(text: str) -> set[str]:
@@ -81,7 +79,7 @@ def _ranked(habitat: str, n: int = 5) -> list[dict]:
     return out
 
 
-def _build_context(question: str, habitat: Optional[str]) -> dict:
+def _build_context(question: str, habitat: str | None) -> dict:
     q = _tokens(question)
     ctx: dict = {}
 
@@ -138,7 +136,7 @@ def _build_context(question: str, habitat: Optional[str]) -> dict:
     return ctx
 
 
-def _generate(prompt: str) -> Optional[str]:
+def _generate(prompt: str) -> str | None:
     key, model = os.getenv("GEMINI_API_KEY"), os.getenv("GEMINI_MODEL")
     if not key or not model:
         print("[qa] GEMINI_API_KEY or GEMINI_MODEL is not set")
@@ -153,7 +151,7 @@ def _generate(prompt: str) -> Optional[str]:
             print(f"[qa] Gemini returned {r.status_code}: {r.text[:300]}")
             return None
         return r.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
-    except Exception as e:
+    except (httpx.HTTPError, KeyError, IndexError, TypeError, ValueError) as e:
         print(f"[qa] request failed: {type(e).__name__}: {e}")
         return None
 

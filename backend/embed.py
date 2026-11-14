@@ -28,7 +28,7 @@ def embed(texts: list[str], task: str) -> list[list[float]] | None:
             print(f"[embed] {r.status_code}: {r.text[:300]}")
             return None
         return [e["values"] for e in r.json()["embeddings"]]
-    except Exception as e:
+    except (httpx.HTTPError, KeyError, IndexError, TypeError, ValueError) as e:
         print(f"[embed] request failed: {type(e).__name__}: {e}")
         return None
 

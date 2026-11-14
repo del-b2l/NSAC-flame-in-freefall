@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from backend.data_loader import load_safety, load_habitats
-from backend.data_loader import load_investigations
+
+from backend.data_loader import load_habitats, load_investigations, load_safety
 
 router = APIRouter()
 
