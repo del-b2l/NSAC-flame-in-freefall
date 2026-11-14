@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Earth",
+    "oxygen_pct": 21,
+    "pressure_psi": 14.7,
+    "status": "stated",
+    "source_url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/",
+    "note": "Pressure at sea level is on the challenge page. 21% oxygen is standard air and is not stated there."
+  },
+  {
+    "name": "Space station",
+    "oxygen_pct": 21,
+    "pressure_psi": 14.7,
+    "status": "assumed",
+    "source_url": null,
+    "note": "Assumed equal to Earth air. No source checked."
+  },
+  {
+    "name": "Moon base",
+    "oxygen_pct": 30,
+    "pressure_psi": 10.2,
+    "status": "expected",
+    "source_url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/",
+    "note": "NASA expects 30% oxygen or greater at 10.2 psi or less. Boundary values, not a final design."
+  },
+  {
+    "name": "Rover",
+    "oxygen_pct": 30,
+    "pressure_psi": 10.2,
+    "status": "expected",
+    "source_url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/",
+    "note": "Same expected range as the Moon base."
+  },
+  {
+    "name": "Spacesuit",
+    "oxygen_pct": 100,
+    "pressure_psi": 4.3,
+    "status": "stated",
+    "source_url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/",
+    "note": "Challenge page: 100% oxygen at 4.3 psi."
+  }
+]
