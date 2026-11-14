@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flame in Freefall: Dashboard Mockup</title>
+<style>
+  :root { --ink:#1d2330; --muted:#5b6475; --line:#dde2ea; --bg:#f6f7f9; --card:#fff; --accent:#c4502b; --ok:#2d7a4f; --warn:#8a6d00; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--ink); background:var(--bg); line-height:1.5; }
+  header { background:#15202f; color:#fff; padding:24px 32px; }
+  header h1 { margin:0 0 4px; font-size:24px; }
+  header p { margin:0; color:#c8cfdb; font-size:14px; }
+  nav { display:flex; gap:4px; padding:12px 32px 0; background:#fff; border-bottom:1px solid var(--line); flex-wrap:wrap; position:sticky; top:0; z-index:5; }
+  nav button { border:0; background:none; padding:10px 14px; font-size:15px; cursor:pointer; color:var(--muted); border-bottom:3px solid transparent; }
+  nav button.active { color:var(--ink); border-bottom-color:var(--accent); font-weight:600; }
+  main { padding:24px 32px 64px; max-width:1100px; margin:0 auto; }
+  section { display:none; }
+  section.active { display:block; }
+  h2 { font-size:20px; margin:0 0 12px; }
+  h3 { font-size:16px; margin:20px 0 8px; }
+  .note { color:var(--muted); font-size:14px; margin:4px 0 16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:16px; margin-bottom:12px; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .btn { border:1px solid var(--line); background:#fff; border-radius:6px; padding:8px 14px; cursor:pointer; font-size:14px; }
+  .btn.sel { background:var(--ink); color:#fff; border-color:var(--ink); }
+  .pill { font-size:12px; padding:2px 8px; border-radius:99px; background:#eef1f6; color:var(--muted); }
+  .tbd { color:var(--warn); font-style:italic; }
+  .sum { font-size:14px; color:var(--muted); }
+  table { border-collapse:collapse; width:100%; background:#fff; font-size:14px; }
+  th, td { border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; }
+  th { background:#f0f2f6; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; }
+  .rank-sentence { background:#fff8ec; border-left:4px solid var(--accent); padding:10px 14px; font-size:14px; margin:12px 0; }
+  .src { font-size:13px; }
+  a { color:#1f5fa8; }
+  .explain { display:none; margin-top:8px; font-size:14px; background:#f3f7ff; padding:10px; border-radius:6px; }
+  .explain.open { display:block; }
+  .finding { font-size:17px; }
+  footer { margin-top:32px; font-size:13px; color:var(--muted); border-top:1px solid var(--line); padding-top:12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Flame in Freefall</h1>
+  <p>Fire safety insights for crew habitats, from NASA's microgravity combustion data. Mockup with sample data.</p>
+</header>
+
+<nav>
+  <button class="active" data-tab="rank">Habitat &amp; tests</button>
+  <button data-tab="inv">Investigations</button>
+  <button data-tab="compare">Compare</button>
+  <button data-tab="hw">Hardware</button>
+  <button data-tab="pda">Prevent · Detect · Put out</button>
+  <button data-tab="gaps">Gaps &amp; Earth use</button>
+  <button data-tab="finding">Key finding &amp; safety table</button>
+</nav>
+
+<main>
+
+<!-- ============ 1. HABITAT & TESTS ============ -->
+<section id="rank" class="active">
+  <h2>1. Choose a habitat</h2>
+  <div class="row" id="habitatBtns"></div>
+  <div class="rank-sentence">Tests score higher when their oxygen and pressure are closer to this habitat.</div>
+  <p class="sum" id="habitatInfo"></p>
+  <h3>Ranked tests</h3>
+  <div id="testList"></div>
+</section>
+
+<!-- ============ 2. INVESTIGATIONS ============ -->
+<section id="inv">
+  <h2>2. Investigations</h2>
+  <p class="note">One card per NASA experiment. Fields marked "to fill from PSI" are not yet sourced. We do not guess them.</p>
+  <div class="grid" id="invCards"></div>
+</section>
+
+<!-- ============ 3. COMPARE ============ -->
+<section id="compare">
+  <h2>3. Compare investigations</h2>
+  <p class="note">Tick two or more investigations to see how they are similar and how they differ.</p>
+  <div class="row" id="compareChecks" style="margin-bottom:12px"></div>
+  <div style="overflow-x:auto"><table id="compareTable"></table></div>
+</section>
+
+<!-- ============ 4. HARDWARE ============ -->
+<section id="hw">
+  <h2>4. Hardware</h2>
+  <p class="note">Experiments grouped by the equipment they flew on. Experiments on the same hardware are comparable.</p>
+  <div id="hwGroups"></div>
+</section>
+
+<!-- ============ 5. PREVENT / DETECT / PUT OUT ============ -->
+<section id="pda">
+  <h2>5. Prevent · Detect · Put out</h2>
+  <p class="note">NASA's fire-safety structure. Each tab lists the experiments that study that part.</p>
+  <div class="row" style="margin-bottom:12px">
+    <button class="btn sel" data-pda="prevent">Prevent</button>
+    <button class="btn" data-pda="detect">Detect</button>
+    <button class="btn" data-pda="putout">Put out</button>
+  </div>
+  <div id="pdaBody"></div>
+</section>
+
+<!-- ============ 6. GAPS & EARTH USE ============ -->
+<section id="gaps">
+  <h2>6. Gaps and Earth use</h2>
+  <div class="card">
+    <h3 style="margin-top:0">What is missing</h3>
+    <p>There is currently no partial-gravity combustion data in PSI. Partial gravity is what a Moon base would have. Microgravity and normal-gravity results could bound what happens at intermediate gravity levels.</p>
+    <p class="src">Source: <a href="https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/" target="_blank">challenge page</a></p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Applications on Earth</h3>
+    <ul>
+      <li>Fine-water-mist extinguishers, developed for use on the ISS</li>
+      <li>Smoke detection improvements</li>
+      <li>Firefighter gear, including protective clothing and air tanks</li>
+    </ul>
+    <p class="src">Source: <a href="https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/" target="_blank">challenge page</a></p>
+  </div>
+</section>
+
+<!-- ============ 7. KEY FINDING & SAFETY TABLE ============ -->
+<section id="finding">
+  <h2>7. Key finding</h2>
+  <div class="card finding">
+    In Saffire VI, smoke was readily detected at 981 seconds, after most of the hazardous gas release had already happened.
+    <div class="src" style="margin-top:8px">Source: <a href="https://ntrs.nasa.gov/citations/20240007488" target="_blank">Saffire VI presentation, ICES 2024 (preliminary)</a></div>
+  </div>
+
+  <h2 style="margin-top:28px">Safety table: what NASA has tested</h2>
+  <p class="note">Each cell is one of: <b>Tested</b> (NASA tested something close), <b>Rule</b> (NASA's pass/fail rule applies), or empty (not tested yet). We do not invent thresholds.</p>
+  <div style="overflow-x:auto"><table>
+    <tr><th>Material</th><th>Tested conditions (O2, pressure)</th><th>Earth air (21%, 14.7 psi)</th><th>Moon base air (30%, 10.2 psi)</th></tr>
+    <tr><td>Two-sided PMMA, 1 cm (Saffire VI-3)</td><td>30.3%, 7.9 psi</td><td>Not tested yet</td><td>Tested at 30.3%, but at 7.9 psi, not 10.2 psi</td></tr>
+    <tr><td>SIBAL cloth, 50 cm (Saffire IV-1, VI-2)</td><td>22.0%, 14.5 psi (IV-1); 31.0%, 7.9 psi (VI-2)</td><td>Tested at 22.0%, 14.5 psi (close to Earth air)</td><td>Tested at 31.0%, 7.9 psi (close, not exact)</td></tr>
+    <tr><td>Cotton jersey, 50 cm (Saffire V-2)</td><td>26.2%, 10.3 psi</td><td>Not tested yet</td><td>Not tested yet</td></tr>
+    <tr><td>Nomex, silicone</td><td colspan="3" class="tbd">Results from the friend's summary, not yet checked. Left out until checked.</td></tr>
+  </table></div>
+  <p class="src" style="margin-top:8px">Sources: <a href="https://ntrs.nasa.gov/citations/20240007488" target="_blank">Saffire VI presentation</a> · <a href="https://standards.nasa.gov/sites/default/files/standards/NASA/B-w/CHANGE-2/2/Historical/nasa-std-6001b.pdf" target="_blank">NASA-STD-6001B</a> (pass/fail rule, not yet applied to these cells). Mockup only: check each cell before the final build.</p>
+</section>
+
+<footer>
+  Sources: <a href="https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/" target="_blank">challenge page</a> ·
+  <a href="https://psi.nasa.gov/physci/repo/" target="_blank">PSI database</a> ·
+  <a href="https://ntrs.nasa.gov/" target="_blank">NTRS</a>. Preliminary results are marked as preliminary.
+</footer>
+
+</main>
+
+<script>
+// ---------- SAMPLE DATA (Saffire presentation; mockup only) ----------
+const habitats = [
+  { name:"Earth", oxy:21, psi:14.7 },
+  { name:"Space station", oxy:21, psi:14.7 },
+  { name:"Moon base", oxy:30, psi:10.2 },
+  { name:"Rover", oxy:30, psi:10.2 },
+  { name:"Spacesuit", oxy:100, psi:4.3 },
+];
+
+const tests = [
+  { id:"saffire-iv-1", inv:"Saffire-IV", material:"SIBAL cloth, 50 cm", oxy:22.0, psi:14.5, flow:"20 cm/s concurrent",
+    result:"Burn 130 s; total heat release 409 kJ; max 45 C at SFU outlet", url:"https://ntrs.nasa.gov/citations/20240007488" },
+  { id:"saffire-v-2", inv:"Saffire-V", material:"Cotton jersey, 50 cm", oxy:26.2, psi:10.3, flow:"20 cm/s concurrent",
+    result:"Burn 200 s; total heat release 560 kJ; max 46 C at SFU outlet", url:"https://ntrs.nasa.gov/citations/20240007488" },
+  { id:"saffire-vi-2", inv:"Saffire-VI", material:"SIBAL cloth, 50 cm", oxy:31.0, psi:7.9, flow:"20 cm/s concurrent",
+    result:"Burn 112 s; total 580 kJ (peak 3217 W); max 48 C at SFU outlet", url:"https://ntrs.nasa.gov/citations/20240007488" },
+  { id:"saffire-vi-3", inv:"Saffire-VI", material:"Two-sided PMMA, 1 cm, 18 cm", oxy:30.3, psi:7.9, flow:"20 cm/s, cut to 5 cm/s at 1120 s",
+    result:"Burn 780 s; total 1280 kJ (peak 3080 W); max 77 C at SFU outlet", url:"https://ntrs.nasa.gov/citations/20240007488" },
+  { id:"saffire-vi-4", inv:"Saffire-VI", material:"One-sided PMMA, 0.5 cm, 18 cm", oxy:28.8, psi:8.0, flow:"20 cm/s concurrent",
+    result:"Burn 1200 s; total 830 kJ (peak 1507 W); max 57 C at SFU outlet", url:"https://ntrs.nasa.gov/citations/20240007488" },
+];
+
+const TBD = '<span class="tbd">to fill from PSI</span>';
+
+// Investigations: only facts stated on the challenge page; everything else is TBD.
+const investigations = [
+  { name:"BASS / BASS-II", cat:"Prevent", fuels:"Solid and gaseous fuels", hw:"Microgravity Science Glovebox (MSG), SPICE flow duct",
+    objective:"Which solid materials catch fire, and in what air", sensors:TBD, sample:TBD, vars:TBD },
+  { name:"Saffire (I–III, VI)", cat:"Prevent", fuels:"Solid fuels (fabrics, plastics)", hw:"Spacecraft cargo module (Saffire)",
+    objective:"Fire behaviour in a free-air spacecraft environment", sensors:"Smoke and gas measurements (see presentation)", sample:"Up to 50 cm samples (Saffire VI)", vars:"Oxygen, airflow, material, sample size" },
+  { name:"BRE (in ACME)", cat:"Prevent", fuels:"Materials, still atmospheres", hw:"ACME in the CIR rack",
+    objective:"Materials flammability as a function of material properties", sensors:TBD, sample:TBD, vars:TBD },
+  { name:"SAME / SAME-R", cat:"Detect", fuels:"Smoke and aerosols", hw:"Smoke detection instruments",
+    objective:"How smoke is measured in microgravity", sensors:"Smoke detection instruments", sample:TBD, vars:TBD },
+  { name:"DAFT / DAFT-2", cat:"Detect", fuels:"Dust", hw:"Instrument reused from SAME/SAME-R",
+    objective:"Detect dust, using the SAME instrument", sensors:"Dust detection instrument", sample:TBD, vars:TBD },
+  { name:"FLEX", cat:"Put out", fuels:"Liquid droplets", hw:"MDCA in the CIR rack",
+    objective:"What stops a flame: CO2 and helium dilution of the chamber", sensors:TBD, sample:TBD, vars:"Diluent (CO2, helium)" },
+  { name:"FLEX-2, CFI", cat:"Related", fuels:"Liquid droplets", hw:"MDCA in the CIR rack",
+    objective:"Related droplet combustion studies", sensors:TBD, sample:TBD, vars:TBD },
+  { name:"ACME (six experiments)", cat:"Related", fuels:"Gaseous fuels", hw:"ACME modular hardware in the CIR rack",
+    objective:"Gaseous flame studies; CFI-G reached up to 85% oxygen", sensors:TBD, sample:TBD, vars:"Oxygen concentration (CFI-G)" },
+  { name:"SPICE / SLICE", cat:"Related", fuels:"Solid and gaseous", hw:"Microgravity Science Glovebox, SPICE flow duct",
+    objective:"Related combustion studies in the glovebox", sensors:TBD, sample:TBD, vars:TBD },
+];
+
+// ---------- HABITAT & RANKING ----------
+let currentHab = habitats[2];
+function distance(t, h) {
+  if (t.oxy == null || t.psi == null) return Infinity;
+  return Math.abs(t.oxy - h.oxy) + Math.abs(t.psi - h.psi);
+}
+function renderHabitats() {
+  const wrap = document.getElementById("habitatBtns");
+  wrap.innerHTML = "";
+  habitats.forEach(h => {
+    const b = document.createElement("button");
+    b.className = "btn" + (h === currentHab ? " sel" : "");
+    b.textContent = h.name;
+    b.onclick = () => { currentHab = h; renderHabitats(); renderTests(); };
+    wrap.appendChild(b);
+  });
+  document.getElementById("habitatInfo").textContent =
+    `${currentHab.name}: oxygen ${currentHab.oxy}%, pressure ${currentHab.psi} psi`;
+}
+function renderTests() {
+  const sorted = [...tests].sort((a,b) => distance(a,currentHab) - distance(b,currentHab));
+  const list = document.getElementById("testList");
+  list.innerHTML = sorted.map((t,i) => `
+    <div class="card">
+      <div class="row"><b>${i+1}. ${t.inv}</b> <span class="pill">${t.id}</span></div>
+      <div>${t.material}</div>
+      <div class="sum">O2 ${t.oxy}% · ${t.psi} psi · ${t.flow}</div>
+      <div class="sum">Result: ${t.result}</div>
+      <div class="row" style="margin-top:6px">
+        <button class="btn" onclick="toggleExplain('${t.id}')">Explain</button>
+        <a class="src" href="${t.url}" target="_blank">Source</a>
+      </div>
+      <div class="explain" id="ex-${t.id}">AI explanation will appear here (Gemini, built from this record only). Not in the mockup.</div>
+    </div>`).join("");
+}
+function toggleExplain(id) {
+  document.getElementById("ex-"+id).classList.toggle("open");
+}
+
+// ---------- INVESTIGATIONS ----------
+function renderInvestigations() {
+  document.getElementById("invCards").innerHTML = investigations.map(v => `
+    <div class="card">
+      <div class="row"><b>${v.name}</b> <span class="pill">${v.cat}</span></div>
+      <p class="sum"><b>Objective:</b> ${v.objective}</p>
+      <p class="sum"><b>Fuels:</b> ${v.fuels}</p>
+      <p class="sum"><b>Hardware:</b> ${v.hw}</p>
+      <p class="sum"><b>Sample size:</b> ${v.sample}</p>
+      <p class="sum"><b>Sensors:</b> ${v.sensors}</p>
+      <p class="sum"><b>Variables:</b> ${v.vars}</p>
+    </div>`).join("");
+}
+
+// ---------- COMPARE ----------
+let compareSel = [investigations[1], investigations[3], investigations[5]];
+function renderCompare() {
+  const checks = document.getElementById("compareChecks");
+  checks.innerHTML = investigations.map((v,i) => {
+    const on = compareSel.includes(v);
+    return `<button class="btn ${on?'sel':''}" onclick="toggleCompare(${i})">${v.name}</button>`;
+  }).join("");
+  const rows = ["cat","objective","fuels","hw","sample","sensors","vars"];
+  const labels = {cat:"Category",objective:"Objective",fuels:"Fuels",hw:"Hardware",sample:"Sample size",sensors:"Sensors",vars:"Variables"};
+  if (compareSel.length < 2) {
+    document.getElementById("compareTable").innerHTML = "<tr><td>Select at least two investigations.</td></tr>";
+    return;
+  }
+  let html = "<tr><th></th>" + compareSel.map(v => `<th>${v.name}</th>`).join("") + "</tr>";
+  rows.forEach(r => {
+    html += `<tr><th>${labels[r]}</th>` + compareSel.map(v => `<td>${v[r]}</td>`).join("") + "</tr>";
+  });
+  document.getElementById("compareTable").innerHTML = html;
+}
+function toggleCompare(i) {
+  const v = investigations[i];
+  compareSel = compareSel.includes(v) ? compareSel.filter(x => x !== v) : [...compareSel, v];
+  renderCompare();
+}
+
+// ---------- HARDWARE ----------
+function renderHardware() {
+  const groups = {};
+  investigations.forEach(v => { (groups[v.hw] = groups[v.hw] || []).push(v.name); });
+  document.getElementById("hwGroups").innerHTML = Object.entries(groups).map(([hw, names]) => `
+    <div class="card"><b>${hw}</b><p class="sum">${names.join(", ")}</p></div>`).join("");
+}
+
+// ---------- PREVENT / DETECT / PUT OUT ----------
+function renderPda(key) {
+  const map = { prevent:"Prevent", detect:"Detect", putout:"Put out" };
+  const items = investigations.filter(v => v.cat === map[key]);
+  document.getElementById("pdaBody").innerHTML = items.length
+    ? items.map(v => `<div class="card"><b>${v.name}</b><p class="sum">${v.objective}</p></div>`).join("")
+    : "<p>No experiments listed.</p>";
+}
+document.querySelectorAll("[data-pda]").forEach(b => b.onclick = () => {
+  document.querySelectorAll("[data-pda]").forEach(x => x.classList.remove("sel"));
+  b.classList.add("sel");
+  renderPda(b.dataset.pda);
+});
+
+// ---------- TABS ----------
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach(x => x.classList.remove("active"));
+  document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+  b.classList.add("active");
+  document.getElementById(b.dataset.tab).classList.add("active");
+});
+
+renderHabitats(); renderTests(); renderInvestigations(); renderCompare(); renderHardware(); renderPda("prevent");
+</script>
+</body>
+</html>
