@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from backend.data_loader import load_safety, load_habitats
+from backend.data_loader import load_investigations
 
 router = APIRouter()
 
@@ -45,3 +46,11 @@ def safety_table():
         "rules": safety.get("rules"),
         "rules_note": safety.get("rules_note"),
     }
+
+@router.get("/hardware")
+def hardware():
+    groups: dict[str, list] = {}
+    for inv in load_investigations():
+        family = inv.get("hardware_family") or "Not specified"
+        groups.setdefault(family, []).append({"id": inv["id"], "name": inv["name"]})
+    return groups

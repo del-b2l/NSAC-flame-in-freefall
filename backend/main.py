@@ -22,6 +22,9 @@ app.include_router(safety_router)
 from backend.brief import router as brief_router
 app.include_router(brief_router)
 
+from backend.investigations import router as investigations_router
+app.include_router(investigations_router)
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
@@ -48,7 +51,3 @@ def safety():
 @app.get("/insights")
 def insights():
     return load_insights()
-
-# After Shaheer's PR is merged:
-# from backend.investigations import router as investigations_router
-# app.include_router(investigations_router)
