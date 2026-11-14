@@ -13,6 +13,7 @@ export const HABITATS: Habitat[] = [
     pressure_psi: 14.7,
     source: 'Challenge page; NASA OCHMO-TB-003',
     description: 'Standard sea-level terrestrial atmosphere',
+    planetGif: '/assets/planets/earth_spin.gif',
   },
   {
     name: 'Space station',
@@ -20,6 +21,7 @@ export const HABITATS: Habitat[] = [
     pressure_psi: 14.7,
     source: 'Challenge page; NASA OCHMO-TB-003',
     description: 'ISS habitable volume atmosphere (matches Earth sea-level)',
+    planetGif: '/assets/planets/station_spin.gif',
   },
   {
     name: 'Moon base',
@@ -27,6 +29,7 @@ export const HABITATS: Habitat[] = [
     pressure_psi: 10.2,
     source: 'Challenge page (Exploration Atmosphere)',
     description: 'Reduced pressure, elevated oxygen to minimize EVA pre-breathe times',
+    planetGif: '/assets/planets/moon_spin.gif',
   },
   {
     name: 'Rover',
@@ -34,6 +37,7 @@ export const HABITATS: Habitat[] = [
     pressure_psi: 10.2,
     source: 'Challenge page; Exploration Atmosphere',
     description: 'Pressurized planetary surface exploration vehicle',
+    planetGif: '/assets/planets/rover_spin.gif',
   },
   {
     name: 'Spacesuit',
@@ -41,6 +45,7 @@ export const HABITATS: Habitat[] = [
     pressure_psi: 4.3,
     source: 'Challenge page (EMU / xEMU specs)',
     description: '100% pure oxygen at low pressure for mobility and flexibility',
+    planetGif: '/assets/planets/spacesuit_spin.gif',
   },
 ];
 

@@ -20,6 +20,7 @@ export interface Habitat {
   pressure_psi: number;
   source?: string;
   description?: string;
+  planetGif?: string;
 }
 
 export type SourceBadgeKind = 'source' | 'ai';

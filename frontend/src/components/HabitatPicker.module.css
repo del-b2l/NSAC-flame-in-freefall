@@ -30,8 +30,8 @@
 .buttonGroup {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 16px;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .habitatBtn {
@@ -39,7 +39,7 @@
   color: #d1d5db;
   border: 1.5px solid #374151;
   border-radius: 6px;
-  padding: 8px 16px;
+  padding: 8px 14px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -49,12 +49,13 @@
   gap: 10px;
 }
 
-.btnIcon {
-  width: 20px;
-  height: 20px;
+.btnPlanetThumb {
+  width: 22px;
+  height: 22px;
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
+  border-radius: 50%;
   flex-shrink: 0;
 }
 
@@ -62,14 +63,14 @@
   background: #374151;
   color: #fff;
   border-color: #4b5563;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .activeBtn {
   background: #0284c7;
   color: #ffffff;
   border-color: #38bdf8;
-  box-shadow: 0 0 14px rgba(56, 189, 248, 0.45);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
 }
 
 .activeBtn:hover:not(:disabled) {
@@ -112,32 +113,64 @@
   flex-shrink: 0;
 }
 
-/* Active Habitat Telemetry Display with Spinning Planet */
+/* Active Habitat Telemetry Display with Dynamic Spinning Planet */
 .telemetryCard {
   background: #0b1120;
-  border: 1px solid #1e293b;
-  border-radius: 6px;
-  padding: 16px 20px;
+  border: 1.5px solid #1e293b;
+  border-radius: 8px;
+  padding: 18px 22px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 18px;
+  position: relative;
+  overflow: hidden;
 }
 
 .telemetryLeft {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
+}
+
+.planetSpinWrapper {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .planetAnimation {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   border-radius: 50%;
-  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.5));
+  transition: filter 0.3s ease;
+}
+
+/* Specific glows per planet */
+.glowEarth {
+  filter: drop-shadow(0 0 12px rgba(37, 99, 235, 0.75)) drop-shadow(0 0 4px rgba(34, 197, 94, 0.6));
+}
+
+.glowMoon {
+  filter: drop-shadow(0 0 12px rgba(226, 232, 240, 0.65)) drop-shadow(0 0 4px rgba(148, 163, 184, 0.5));
+}
+
+.glowStation {
+  filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.8)) drop-shadow(0 0 5px rgba(2, 132, 199, 0.7));
+}
+
+.glowRover {
+  filter: drop-shadow(0 0 14px rgba(249, 115, 22, 0.85)) drop-shadow(0 0 4px rgba(194, 65, 12, 0.6));
+}
+
+.glowSpacesuit {
+  filter: drop-shadow(0 0 14px rgba(250, 204, 21, 0.85)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.6));
 }
 
 .telemetryTextGroup {
@@ -147,18 +180,20 @@
 }
 
 .telemetryHabitatName {
-  font-size: 17px;
-  font-weight: 700;
-  color: #38bdf8;
+  font-size: 18px;
+  font-weight: 800;
+  color: #f8fafc;
   font-family: ui-monospace, monospace;
   display: flex;
   align-items: center;
   gap: 8px;
+  letter-spacing: 0.03em;
 }
 
 .telemetryDesc {
   font-size: 13px;
   color: #94a3b8;
+  max-width: 450px;
 }
 
 .telemetryValues {
@@ -172,10 +207,10 @@
   display: flex;
   flex-direction: column;
   background: #1e293b;
-  padding: 8px 14px;
+  padding: 8px 16px;
   border-radius: 6px;
   border: 1px solid #334155;
-  min-width: 110px;
+  min-width: 120px;
 }
 
 .metricLabel {
@@ -187,7 +222,7 @@
 }
 
 .metricVal {
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 800;
   color: #f8fafc;
   font-family: ui-monospace, monospace;

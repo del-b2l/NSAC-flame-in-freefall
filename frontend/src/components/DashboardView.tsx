@@ -40,7 +40,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className={styles.titleRow}>
           <div className={styles.titleWithIcon}>
             <img
-              src="/assets/planets/planet_spin.gif"
+              src={selectedHabitat.planetGif || '/assets/planets/earth_spin.gif'}
               alt="Spinning Planet Emblem"
               className={styles.headerPlanet}
             />

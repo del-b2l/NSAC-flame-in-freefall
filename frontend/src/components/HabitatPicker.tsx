@@ -10,12 +10,20 @@ interface HabitatPickerProps {
   isLoading?: boolean;
 }
 
-const HABITAT_ICONS: Record<string, string> = {
-  Earth: '/assets/icons/icon-planet.png',
-  'Space station': '/assets/icons/icon-rocket.png',
-  'Moon base': '/assets/icons/icon-star.png',
-  Rover: '/assets/icons/icon-battery.png',
-  Spacesuit: '/assets/icons/icon-shield.png',
+const PLANET_GIFS: Record<string, string> = {
+  Earth: '/assets/planets/earth_spin.gif',
+  'Space station': '/assets/planets/station_spin.gif',
+  'Moon base': '/assets/planets/moon_spin.gif',
+  Rover: '/assets/planets/rover_spin.gif',
+  Spacesuit: '/assets/planets/spacesuit_spin.gif',
+};
+
+const GLOW_CLASSES: Record<string, string> = {
+  Earth: styles.glowEarth,
+  'Space station': styles.glowStation,
+  'Moon base': styles.glowMoon,
+  Rover: styles.glowRover,
+  Spacesuit: styles.glowSpacesuit,
 };
 
 export const HabitatPicker: React.FC<HabitatPickerProps> = ({
@@ -24,14 +32,18 @@ export const HabitatPicker: React.FC<HabitatPickerProps> = ({
   onSelectHabitat,
   isLoading = false,
 }) => {
+  const currentPlanetGif =
+    selectedHabitat.planetGif || PLANET_GIFS[selectedHabitat.name] || '/assets/planets/earth_spin.gif';
+  const currentGlowClass = GLOW_CLASSES[selectedHabitat.name] || styles.glowEarth;
+
   return (
     <section className={styles.container} aria-labelledby="habitat-heading">
       <div className={styles.headerRow}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <img
             src="/assets/icons/icon-planet.png"
             alt=""
-            className={styles.btnIcon}
+            style={{ width: '20px', height: '20px', imageRendering: 'pixelated' }}
             aria-hidden="true"
           />
           <h2 id="habitat-heading" className={styles.heading}>
@@ -41,11 +53,11 @@ export const HabitatPicker: React.FC<HabitatPickerProps> = ({
         <SourceBadge kind="source" label="[Data from source: Challenge Specs]" size="sm" />
       </div>
 
-      {/* 5 Habitat selection buttons with retro pixel art icons */}
+      {/* 5 Habitat selection buttons with real-time spinning planetary thumbnails */}
       <div className={styles.buttonGroup} role="group" aria-label="Habitats">
         {habitats.map((habitat) => {
           const isSelected = habitat.name === selectedHabitat.name;
-          const iconPath = HABITAT_ICONS[habitat.name] || '/assets/icons/icon-planet.png';
+          const planetSrc = habitat.planetGif || PLANET_GIFS[habitat.name] || '/assets/planets/earth_spin.gif';
 
           return (
             <button
@@ -57,9 +69,9 @@ export const HabitatPicker: React.FC<HabitatPickerProps> = ({
               aria-pressed={isSelected}
             >
               <img
-                src={iconPath}
-                alt=""
-                className={styles.btnIcon}
+                src={planetSrc}
+                alt={`${habitat.name} thumbnail`}
+                className={styles.btnPlanetThumb}
                 aria-hidden="true"
               />
               <span>{habitat.name}</span>
@@ -81,14 +93,17 @@ export const HabitatPicker: React.FC<HabitatPickerProps> = ({
         </span>
       </div>
 
-      {/* Selected Habitat Atmosphere Telemetry with Spinning Planet GIF & HUD Bars */}
+      {/* Selected Habitat Atmosphere Telemetry with Dynamic Habitat-Specific Spinning Planet */}
       <div className={styles.telemetryCard}>
         <div className={styles.telemetryLeft}>
-          <img
-            src="/assets/planets/planet_spin.gif"
-            alt="Rotating pixel planet"
-            className={styles.planetAnimation}
-          />
+          <div className={styles.planetSpinWrapper}>
+            <img
+              key={selectedHabitat.name}
+              src={currentPlanetGif}
+              alt={`Spinning globe representing ${selectedHabitat.name}`}
+              className={`${styles.planetAnimation} ${currentGlowClass}`}
+            />
+          </div>
           <div className={styles.telemetryTextGroup}>
             <div className={styles.telemetryHabitatName}>
               <span>HABITAT TARGET: {selectedHabitat.name.toUpperCase()}</span>
