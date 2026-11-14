@@ -5,4 +5,8 @@ __pycache__/
 dist/
 data/raw/*
 !data/raw/.gitkeep
+!data/raw/README.md
+!data/raw/psi/
+data/raw/psi/*
+!data/raw/psi/manifest.json
 *.*-backup

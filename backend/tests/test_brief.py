@@ -5,11 +5,20 @@ client = TestClient(app)
 
 
 def test_brief_moon_base_order():
+    """The five closest scored tests, nearest first.
+
+    The ids are not pinned: the dataset is regenerated from NASA tables, so
+    pinning names would fail on every data refresh. The properties are what
+    /brief promises.
+    """
     r = client.get("/brief", params={"habitat": "Moon base"})
     assert r.status_code == 200
-    ids = [t["id"] for t in r.json()["top_tests"]]
-    assert ids == ["saffire-vi-3", "saffire-vi-2", "saffire-vi-4",
-                   "saffire-v-2", "saffire-iv-1"]
+    top = r.json()["top_tests"]
+    assert len(top) == 5
+    assert all(t["tier"] == 1 for t in top)
+    distances = [t["distance"] for t in top]
+    assert distances == sorted(distances)
+    assert all(t["oxygen_pct"] is not None and t["pressure_psi"] is not None for t in top)
 
 
 def test_brief_excludes_unscored():
