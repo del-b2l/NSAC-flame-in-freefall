@@ -328,4 +328,4 @@ deadline on Sunday. Confirm the exact deadline on the event page.
 -   Only edit the files in your section. For anything else, ask the
     owner first.
 -   Post a short daily update in the group chat: what you finished, what
-    you're doing next, and what's blocking you.
+    you're doing next, and what's blocking you
