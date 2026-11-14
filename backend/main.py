@@ -25,6 +25,12 @@ app.include_router(brief_router)
 from backend.investigations import router as investigations_router
 app.include_router(investigations_router)
 
+from backend.earth_use import router as earth_use_router
+app.include_router(earth_use_router)
+
+from backend.qa import router as qa_router
+app.include_router(qa_router)
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
