@@ -29,12 +29,17 @@ Only investigations whose table has **both** an oxygen and a pressure column
 can produce a record that matches `docs/data_schema.md`. As of Saturday
 14 November 2026:
 
-| Accession | Investigation | Rows | Oxygen column | Pressure column |
+| Accession | Table | Records kept | Oxygen column | Pressure column |
 |---|---|---|---|---|
-| PSI-159 | CFI-G | 179 | `XO2 before test` (mole fraction) | `approx p` (bar) |
-| PSI-10 | ACME / Flame Design | 187 | `XO2 (init)` (mole fraction) | `pmean` (atm) |
-| PSI-69 | FLEX | 274 | `O initial ambient composition` (mole fraction) | `Ambient pressure` (mmHg) |
-| PSI-39 | CFI | 87 | `Oxygen` (mole fraction) | `Pressure` (text, e.g. `1 atm`) |
+| PSI-159 | CFI-G Normal Flames | 179 | `XO2 before test` (mole fraction) | `approx p (bar)` (bar) |
+| PSI-159 | CFI-G Inverse Flames | 154 (861 rows are empty) | `XO2` (mole fraction, burner gas) | `approx p (bar)` (bar) |
+| PSI-10 | Flame Design Normal Flame | 187 (20 have no pressure) | `XO2 (init)` (mole fraction) | `pmean (atm)` (atm) |
+| PSI-10 | Flame Design Inverse Flame | 109 (11 have `RAMP` / `LOW O2`) | `XO2` (mole fraction, burner gas) | `pmean (atm)` (atm) |
+| PSI-69 | FLEX | 273 (1 has pressure 0) | `O initial ambient composition; mole fraction` | `Ambient pressure; mmHg` (mmHg) |
+| PSI-39 | CFI | 79 (8 rows are exact copies of another row) | `Oxygen` (mole fraction) | `Pressure` (text, e.g. `1 atm`) |
+
+`docs/data_report.md` (built by `data/scripts/build_report.py`) has the full
+list, including the investigations that give no records and why.
 
 The fire-safety investigations (Saffire I–III, BASS, BASS-II) publish oxygen
 and airflow but **no pressure**, so they cannot fill a record on their own.
@@ -53,3 +58,5 @@ kept in `data/sample/sample_tests.json`.
 | Date | Who | What |
 |---|---|---|
 | 2026-11-14 | Shaheer | Created this file. Fetched 25 experimental tables from 26 combustion investigations with `fetch_psi.py`; manifest records the versions and hashes. |
+| 2026-11-14 | Ayesh | Listed both inverse-flame tables above. Added `build_investigations.py` (investigations and tags from NASA metadata; PSI-108 and PSI-181 dropped as not combustion) and `build_report.py`. |
+| 2026-11-14 | Ayesh | `fetch_psi.py` now lists non-combustion search hits (PSI-108 Fluid Physics, PSI-181 Materials Science) under `skipped` in the manifest instead of downloading them. Manifest: 24 investigations, 22 experimental tables, hashes unchanged. `build_tests.py` drops exact duplicate rows (8 in CFI); `tests.json` has 986 records. |

@@ -29,6 +29,7 @@ import urllib.parse
 import urllib.request
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 BASE = "https://psi.nasa.gov"
 ROOT = Path(__file__).resolve().parents[2]
@@ -39,6 +40,11 @@ SEARCH_URL = f"{BASE}/geode-py/ws/repo/search?term=combustion&source=psi&type=in
 HEADERS = {"User-Agent": "flame-in-freefall/1.0 (Space Apps 2026; data provenance)"}
 PAUSE_SECONDS = 0.4
 RETRIES = 3
+
+# The search is a text match, so it also returns a few investigations NASA
+# files under another research area. Those are listed under `skipped` in the
+# manifest instead of being downloaded.
+COMBUSTION_AREA = "Combustion Science"
 
 
 def _get(url: str, timeout: int = 60) -> bytes:
@@ -85,8 +91,25 @@ def sha256(data: bytes) -> str:
 
 def load_manifest() -> dict:
     if MANIFEST.exists():
-        return json.loads(MANIFEST.read_text(encoding="utf-8"))
-    return {"generated_by": "data/scripts/fetch_psi.py", "investigations": {}}
+        manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    else:
+        manifest = {"generated_by": "data/scripts/fetch_psi.py", "investigations": {}}
+    manifest.setdefault("skipped", [])
+    return manifest
+
+
+def accession_number(accession: str) -> int:
+    return int(accession.split("-")[1])
+
+
+def skip_entry(accession: str, record: dict) -> dict:
+    area = record.get("researchArea")
+    return {
+        "accession": accession,
+        "title": record.get("title"),
+        "researchArea": area,
+        "reason": f"researchArea is {area!r}, not {COMBUSTION_AREA!r}",
+    }
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -98,7 +121,8 @@ def main(argv: list[str] | None = None) -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     manifest = load_manifest()
     wanted = args.only or combustion_accessions()
-    downloaded = skipped = failed = 0
+    downloaded = present = failed = 0
+    not_combustion: dict[str, dict] = {item["accession"]: item for item in manifest["skipped"]}
 
     for accession in wanted:
         try:
@@ -108,6 +132,13 @@ def main(argv: list[str] | None = None) -> int:
             failed += 1
             continue
 
+        if record.get("researchArea") != COMBUSTION_AREA:
+            not_combustion[accession] = skip_entry(accession, record)
+            manifest["investigations"].pop(accession, None)
+            print(f"[{accession}] skipped: researchArea is {record.get('researchArea')!r}")
+            continue
+        not_combustion.pop(accession, None)
+
         folder = OUT / accession
         folder.mkdir(exist_ok=True)
         (folder / "_investigation.json").write_text(
@@ -115,7 +146,7 @@ def main(argv: list[str] | None = None) -> int:
         )
 
         tables = record.get("experimentalTable") or []
-        entry = {
+        entry: dict[str, Any] = {
             "acronym": record.get("investigationAcronym"),
             "title": record.get("title"),
             "doi": record.get("doi"),
@@ -135,7 +166,10 @@ def main(argv: list[str] | None = None) -> int:
                 }
             )
             if path.exists() and not args.force:
-                skipped += 1
+                # Hash the copy on disk so the manifest keeps a checksum for it.
+                data = path.read_bytes()
+                entry["tables"][-1].update({"bytes": len(data), "sha256": sha256(data)})
+                present += 1
                 continue
             try:
                 data = download_table(accession, table)
@@ -153,8 +187,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"[{accession}] {record.get('investigationAcronym') or '?':<14} "
               f"{len(tables)} table(s)")
 
+    manifest["skipped"] = sorted(not_combustion.values(), key=lambda item: accession_number(item["accession"]))
     MANIFEST.write_text(json.dumps(manifest, indent=1, sort_keys=True), encoding="utf-8")
-    print(f"\ndownloaded {downloaded}, already present {skipped}, failed {failed}")
+    print(f"\ndownloaded {downloaded}, already present {present}, failed {failed}, "
+          f"not combustion {len(manifest['skipped'])}")
     print(f"manifest: {MANIFEST.relative_to(ROOT)}")
     return 1 if failed else 0
 

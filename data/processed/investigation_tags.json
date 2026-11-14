@@ -1,0 +1,122 @@
+[
+  {
+    "id": "PSI-10",
+    "category": "related",
+    "habitats": []
+  },
+  {
+    "id": "PSI-20",
+    "category": "prevent",
+    "habitats": []
+  },
+  {
+    "id": "PSI-21",
+    "category": "related",
+    "habitats": []
+  },
+  {
+    "id": "PSI-22",
+    "category": "related",
+    "habitats": []
+  },
+  {
+    "id": "PSI-23",
+    "category": "related",
+    "habitats": []
+  },
+  {
+    "id": "PSI-25",
+    "category": "prevent",
+    "habitats": []
+  },
+  {
+    "id": "PSI-26",
+    "category": "prevent",
+    "habitats": []
+  },
+  {
+    "id": "PSI-39",
+    "category": "related",
+    "habitats": []
+  },
+  {
+    "id": "PSI-47",
+    "category": "detect",
+    "habitats": []
+  },
+  {
+    "id": "PSI-60",
+    "category": "related",
+    "habitats": []
+  },
+  {
+    "id": "PSI-62",
+    "category": "related",
+    "habitats": []
+  },
+  {
+    "id": "PSI-68",
+    "category": "put out",
+    "habitats": []
+  },
+  {
+    "id": "PSI-69",
+    "category": "put out",
+    "habitats": []
+  },
+  {
+    "id": "PSI-98",
+    "category": "prevent",
+    "habitats": []
+  },
+  {
+    "id": "PSI-99",
+    "category": "prevent",
+    "habitats": []
+  },
+  {
+    "id": "PSI-100",
+    "category": "prevent",
+    "habitats": []
+  },
+  {
+    "id": "PSI-101",
+    "category": "detect",
+    "habitats": []
+  },
+  {
+    "id": "PSI-102",
+    "category": "detect",
+    "habitats": []
+  },
+  {
+    "id": "PSI-106",
+    "category": "related",
+    "habitats": []
+  },
+  {
+    "id": "PSI-107",
+    "category": "related",
+    "habitats": []
+  },
+  {
+    "id": "PSI-115",
+    "category": "related",
+    "habitats": []
+  },
+  {
+    "id": "PSI-117",
+    "category": "related",
+    "habitats": []
+  },
+  {
+    "id": "PSI-142",
+    "category": "related",
+    "habitats": []
+  },
+  {
+    "id": "PSI-159",
+    "category": "related",
+    "habitats": []
+  }
+]

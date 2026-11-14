@@ -4,7 +4,7 @@
   "PSI-10": {
    "acronym": "ACME/Flame Design",
    "doi": "10.60555/w4zy-bt45",
-   "fetched_at": "2026-11-14T08:16:07+00:00",
+   "fetched_at": "2026-11-14T11:09:29+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-10",
    "tables": [
     {
@@ -27,7 +27,7 @@
   "PSI-100": {
    "acronym": "SAFFIRE-III",
    "doi": "10.60555/040q-4h36",
-   "fetched_at": "2026-11-14T08:16:53+00:00",
+   "fetched_at": "2026-11-14T11:10:03+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-100",
    "tables": [
     {
@@ -43,7 +43,7 @@
   "PSI-101": {
    "acronym": "SAME-R",
    "doi": "10.60555/2np7-jv14",
-   "fetched_at": "2026-11-14T08:19:04+00:00",
+   "fetched_at": "2026-11-14T11:11:14+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-101",
    "tables": [
     {
@@ -59,7 +59,7 @@
   "PSI-102": {
    "acronym": "SAME",
    "doi": "10.60555/gd4k-8h62",
-   "fetched_at": "2026-11-14T08:16:58+00:00",
+   "fetched_at": "2026-11-14T11:10:05+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-102",
    "tables": [
     {
@@ -75,7 +75,7 @@
   "PSI-106": {
    "acronym": "SLICE",
    "doi": "10.60555/pm12-rg61",
-   "fetched_at": "2026-11-14T08:16:48+00:00",
+   "fetched_at": "2026-11-14T11:10:01+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-106",
    "tables": [
     {
@@ -91,7 +91,7 @@
   "PSI-107": {
    "acronym": "SPICE",
    "doi": "10.60555/9kbh-e962",
-   "fetched_at": "2026-11-14T08:16:29+00:00",
+   "fetched_at": "2026-11-14T11:09:47+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-107",
    "tables": [
     {
@@ -104,33 +104,10 @@
    ],
    "title": "Smoke Point In Co-flow Experiment"
   },
-  "PSI-108": {
-   "acronym": "STDCE-1",
-   "doi": "10.60555/j1z3-bw42",
-   "fetched_at": "2026-11-14T08:18:57+00:00",
-   "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
-   "tables": [
-    {
-     "bytes": 7111,
-     "download_url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-108/download?file=PSI-108_Experimental+table_STDCE-1.csv&version=1&redirect=False",
-     "file": "PSI-108_Experimental table_STDCE-1.csv",
-     "sha256": "c883ab3bc89cadf870d97b0f5d9c533119e1827d788deb0f6e28e59317a8535a",
-     "version": 1
-    },
-    {
-     "bytes": 6601,
-     "download_url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-108/download?file=PSI-108_Experimental+table_STDCE-1%281%29.csv&version=1&redirect=False",
-     "file": "PSI-108_Experimental table_STDCE-1(1).csv",
-     "sha256": "9d403958984512828ade3110691f7bfc5ba1c704ef42b1093edb7fec1e2df9c7",
-     "version": 1
-    }
-   ],
-   "title": "Surface Tension Driven Convection Experiment-1"
-  },
   "PSI-115": {
    "acronym": "",
    "doi": "10.60555/q0v5-1v28",
-   "fetched_at": "2026-11-14T08:18:29+00:00",
+   "fetched_at": "2026-11-14T11:11:02+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-115",
    "tables": [],
    "title": "Utilization of the Smoke Aerosol Measurement Experiment Data for Advanced Modeling and Simulation of Smoke Generation in Micro-Gravity"
@@ -138,7 +115,7 @@
   "PSI-117": {
    "acronym": "",
    "doi": "10.60555/gz0q-b577",
-   "fetched_at": "2026-11-14T08:17:45+00:00",
+   "fetched_at": "2026-11-14T11:10:37+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-117",
    "tables": [],
    "title": "Effect of External Thermo-Convective Perturbation on Cool Flame Dynamics: A Multidimensional Multi-Physics CFD Analysis"
@@ -146,7 +123,7 @@
   "PSI-142": {
    "acronym": "",
    "doi": "10.60555/80qf-vj95",
-   "fetched_at": "2026-11-14T08:18:11+00:00",
+   "fetched_at": "2026-11-14T11:10:54+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-142",
    "tables": [
     {
@@ -162,7 +139,7 @@
   "PSI-159": {
    "acronym": "ACME CFI-G",
    "doi": "10.60555/cyt1-kh64",
-   "fetched_at": "2026-11-14T08:16:23+00:00",
+   "fetched_at": "2026-11-14T11:09:42+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-159",
    "tables": [
     {
@@ -182,26 +159,10 @@
    ],
    "title": "Advanced Combustion via Microgravity Experiments / Cool Flames Investigation with Gases"
   },
-  "PSI-181": {
-   "acronym": "",
-   "doi": "10.60555/td9e-cz97",
-   "fetched_at": "2026-11-14T08:18:46+00:00",
-   "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-181",
-   "tables": [
-    {
-     "bytes": 688,
-     "download_url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-181/download?file=PSI-181_Experimental+table_Experimental+Table_PSI_181.csv&version=1&redirect=False",
-     "file": "PSI-181_Experimental table_Experimental Table_PSI_181.csv",
-     "sha256": "8eeede3bc23213668d4e017cc81d98b273fc6e9291ccc6b7084f108dfbe2a35e",
-     "version": 1
-    }
-   ],
-   "title": "Structure and Properties of Pb-Sn and Pb-free Sn-Ag-Cu Solders Produced in Terrestrial vs. Microgravity Environments under Extremes of Elevated and Cryo Temperatures"
-  },
   "PSI-20": {
    "acronym": "ACME BRE",
    "doi": "10.60555/vb93-3y72",
-   "fetched_at": "2026-11-14T08:18:07+00:00",
+   "fetched_at": "2026-11-14T11:10:53+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-20",
    "tables": [
     {
@@ -217,7 +178,7 @@
   "PSI-21": {
    "acronym": "ACME CLD Flame",
    "doi": "10.60555/23e1-9950",
-   "fetched_at": "2026-11-14T08:17:26+00:00",
+   "fetched_at": "2026-11-14T11:10:26+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-21",
    "tables": [
     {
@@ -233,7 +194,7 @@
   "PSI-22": {
    "acronym": "ACME E-FIELD Flames",
    "doi": "10.60555/se5a-8c73",
-   "fetched_at": "2026-11-14T08:15:54+00:00",
+   "fetched_at": "2026-11-14T11:09:20+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-22",
    "tables": [
     {
@@ -249,7 +210,7 @@
   "PSI-23": {
    "acronym": "ACME s-Flame",
    "doi": "10.60555/k57n-p030",
-   "fetched_at": "2026-11-14T08:18:01+00:00",
+   "fetched_at": "2026-11-14T11:10:49+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
    "tables": [
     {
@@ -265,7 +226,7 @@
   "PSI-25": {
    "acronym": "BASS-II",
    "doi": "10.60555/4qc4-de67",
-   "fetched_at": "2026-11-14T08:18:27+00:00",
+   "fetched_at": "2026-11-14T11:11:00+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
    "tables": [
     {
@@ -281,7 +242,7 @@
   "PSI-26": {
    "acronym": "BASS",
    "doi": "10.60555/58h4-dy80",
-   "fetched_at": "2026-11-14T08:17:44+00:00",
+   "fetched_at": "2026-11-14T11:10:36+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
    "tables": [
     {
@@ -297,7 +258,7 @@
   "PSI-39": {
    "acronym": "CFI",
    "doi": "10.60555/m6pj-a914",
-   "fetched_at": "2026-11-14T08:17:19+00:00",
+   "fetched_at": "2026-11-14T11:10:22+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
    "tables": [
     {
@@ -313,7 +274,7 @@
   "PSI-47": {
    "acronym": "DAFT / DAFT-2",
    "doi": "10.60555/ztgj-d202",
-   "fetched_at": "2026-11-14T08:18:35+00:00",
+   "fetched_at": "2026-11-14T11:11:04+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-47",
    "tables": [
     {
@@ -329,7 +290,7 @@
   "PSI-60": {
    "acronym": "",
    "doi": "10.60555/mzjm-yv57",
-   "fetched_at": "2026-11-14T08:18:12+00:00",
+   "fetched_at": "2026-11-14T11:10:55+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-60",
    "tables": [],
    "title": "Computational and Experimental Analysis of SPICE Data Sets"
@@ -337,7 +298,7 @@
   "PSI-62": {
    "acronym": "",
    "doi": "10.60555/e9xp-ex83",
-   "fetched_at": "2026-11-14T08:18:14+00:00",
+   "fetched_at": "2026-11-14T11:10:56+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-62",
    "tables": [],
    "title": "Concurrent Flame Spread Modeling using Flamelet Generated Manifolds in Microgravity with Comparison to BASS Experiments using Two-Color Tomography"
@@ -345,7 +306,7 @@
   "PSI-68": {
    "acronym": "FLEX-2",
    "doi": "10.60555/byp8-h018",
-   "fetched_at": "2026-11-14T08:17:38+00:00",
+   "fetched_at": "2026-11-14T11:10:34+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-68",
    "tables": [
     {
@@ -361,7 +322,7 @@
   "PSI-69": {
    "acronym": "FLEX",
    "doi": "10.60555/mbq8-0451",
-   "fetched_at": "2026-11-14T08:17:08+00:00",
+   "fetched_at": "2026-11-14T11:10:12+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-69",
    "tables": [
     {
@@ -377,7 +338,7 @@
   "PSI-98": {
    "acronym": "SAFFIRE-I",
    "doi": "10.60555/0t15-1z43",
-   "fetched_at": "2026-11-14T08:18:40+00:00",
+   "fetched_at": "2026-11-14T11:11:06+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
    "tables": [
     {
@@ -393,7 +354,7 @@
   "PSI-99": {
    "acronym": "SAFFIRE-II",
    "doi": "10.60555/2chp-m469",
-   "fetched_at": "2026-11-14T08:18:18+00:00",
+   "fetched_at": "2026-11-14T11:10:57+00:00",
    "page": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-99",
    "tables": [
     {
@@ -406,5 +367,19 @@
    ],
    "title": "Spacecraft Fire Experiment-II"
   }
- }
+ },
+ "skipped": [
+  {
+   "accession": "PSI-108",
+   "reason": "researchArea is 'Fluid Physics', not 'Combustion Science'",
+   "researchArea": "Fluid Physics",
+   "title": "Surface Tension Driven Convection Experiment-1"
+  },
+  {
+   "accession": "PSI-181",
+   "reason": "researchArea is 'Materials Science', not 'Combustion Science'",
+   "researchArea": "Materials Science",
+   "title": "Structure and Properties of Pb-Sn and Pb-free Sn-Ag-Cu Solders Produced in Terrestrial vs. Microgravity Environments under Extremes of Elevated and Cryo Temperatures"
+  }
+ ]
 }
