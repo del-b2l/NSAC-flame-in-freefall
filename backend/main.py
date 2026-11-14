@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.data_loader import load_habitats, load_insights, load_safety, load_tests
 from backend.models import RankRequest
-from backend.ranking import rank_tests
+from backend.ranking import rank_tests_by_tier
 
 app = FastAPI(title="Flame in Freefall API")
 
@@ -55,7 +55,7 @@ def rank(req: RankRequest):
     habitat = next((h for h in load_habitats() if h.name == req.habitat), None)
     if habitat is None:
         raise HTTPException(status_code=404, detail=f"Unknown habitat: {req.habitat}")
-    return rank_tests(load_tests(), habitat)
+    return rank_tests_by_tier(load_tests(), habitat)
 
 @app.get("/safety")
 def safety():

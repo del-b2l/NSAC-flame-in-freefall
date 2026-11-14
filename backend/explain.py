@@ -1,17 +1,17 @@
 import json
 import os
-import re
 
 import httpx
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 
 from backend.data_loader import load_demo_answers, load_tests
+from backend.verify import check_grounded
 
 load_dotenv()
 router = APIRouter()
 
-NUM = re.compile(r"\d+(?:\.\d+)?")
+# NUM = re.compile(r"\d+(?:\.\d+)?")
 
 PROMPT = """You are summarising one NASA fire experiment record for a dashboard.
 
@@ -27,8 +27,8 @@ Record:
 """
 
 
-def _numbers(text: str) -> set[float]:
-    return {float(n) for n in NUM.findall(text)}
+# def _numbers(text: str) -> set[float]:
+    # return {float(n) for n in NUM.findall(text)}
 
 
 def _record_json(test) -> str:
@@ -63,23 +63,23 @@ def explain(test_id: str):
     test = next((t for t in load_tests() if t.id == test_id), None)
     if test is None:
         raise HTTPException(status_code=404, detail=f"Unknown test: {test_id}")
-
+    record = _record_json(test)
+    src = {test_id: record}
     base = {"test_id": test_id, "source_url": test.source_url}
-    record_json = _record_json(test)
 
-    # 1. Live answer, only if every number in it appears in the record
-    text = _ask_gemini(record_json)
+    text = _ask_gemini(record)
     if text:
-        extra = _numbers(text) - _numbers(record_json)
-        if not extra:
+        ok, why = check_grounded(text, src, implicit_source=test_id)
+        if ok:
             return {**base, "text": text, "generated": True, "origin": "gemini"}
-        print(f"[explain] rejected: numbers not in record: {sorted(extra)}\n{text}")
+        print(f"[explain] rejected: {why}\n{text}")
 
-    # 2. Cached demo answer (works with no internet)
     cached = load_demo_answers().get(test_id)
     if cached:
-        return {**base, "text": cached, "generated": True, "origin": "cache"}
+        ok, why = check_grounded(cached, src, implicit_source=test_id)
+        if ok:
+            return {**base, "text": cached, "generated": True, "origin": "cache"}
+        print(f"[explain] cache for {test_id} rejected: {why}")
 
-    # 3. Fall back to NASA's own wording from the record
     return {**base, "text": test.result or "No summary available for this test.",
             "generated": False, "origin": "record"}

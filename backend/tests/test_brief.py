@@ -39,3 +39,10 @@ def test_brief_excludes_unscored():
 
 def test_brief_unknown_habitat():
     assert client.get("/brief", params={"habitat": "Mars"}).status_code == 404
+
+def test_rank_and_brief_agree():
+    for h in ["Earth", "Moon base", "Spacesuit"]:
+        ranked = client.post("/rank", json={"habitat": h}).json()
+        tier1 = [r["test"]["id"] for r in ranked if r["tier"] == 1][:5]
+        brief = [t["id"] for t in client.get("/brief", params={"habitat": h}).json()["top_tests"]]
+        assert brief == tier1

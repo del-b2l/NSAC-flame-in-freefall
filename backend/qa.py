@@ -11,6 +11,8 @@ from backend.catalog import catalog
 from backend.data_loader import load_habitats, load_insights, load_tests, read_processed
 from backend.embed import search
 from backend.ranking import rank_tests
+from backend.verify import check_grounded
+from backend.verify import numbers as numbers_of
 
 load_dotenv()
 router = APIRouter()
@@ -156,19 +158,22 @@ def _generate(prompt: str) -> str | None:
         return None
 
 
-def _verify(answer: str, ctx: dict, question: str) -> tuple[bool, str]:
-    cited = [c.strip() for grp in CITE.findall(answer) for c in grp.split(",")]
-    if not cited:
-        return False, "no citations"
-    if unknown := [c for c in cited if c not in ctx]:
-        return False, f"unknown ids {unknown}"
-    allowed = _numbers(question)
-    for c in set(cited):
-        allowed |= _numbers(json.dumps(ctx[c]["record"], ensure_ascii=False))
-    if extra := _numbers(CITE.sub("", answer)) - allowed:
-        return False, f"numbers not in cited records: {sorted(extra)}"
-    return True, ""
+# def _verify(answer: str, ctx: dict, question: str) -> tuple[bool, str]:
+#     cited = [c.strip() for grp in CITE.findall(answer) for c in grp.split(",")]
+#     if not cited:
+#         return False, "no citations"
+#     if unknown := [c for c in cited if c not in ctx]:
+#         return False, f"unknown ids {unknown}"
+#     allowed = _numbers(question)
+#     for c in set(cited):
+#         allowed |= _numbers(json.dumps(ctx[c]["record"], ensure_ascii=False))
+#     if extra := _numbers(CITE.sub("", answer)) - allowed:
+#         return False, f"numbers not in cited records: {sorted(extra)}"
+#     return True, ""
 
+def _verify(answer: str, ctx: dict, question: str) -> tuple[bool, str]:
+    sources = {k: json.dumps(v["record"], ensure_ascii=False) for k, v in ctx.items()}
+    return check_grounded(answer, sources, allowed_numbers=numbers_of(question))
 
 def _cards(ctx: dict, ids=None) -> list[dict]:
     return [{"id": k, "kind": v["kind"], "label": v["label"], "source_url": v["source_url"]}
