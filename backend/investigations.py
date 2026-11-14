@@ -29,7 +29,6 @@ def investigations(category: Optional[str] = None):
         merged.append({
             **inv,
             "category": tag.get("category"),
-            "habitats": tag.get("habitats"),
         })
 
     if category:

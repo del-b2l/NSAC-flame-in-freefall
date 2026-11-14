@@ -29,7 +29,6 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 RAW = ROOT / "data" / "raw" / "psi"
 MANIFEST = RAW / "manifest.json"
-HABITATS = ROOT / "data" / "processed" / "habitats.json"
 OUTPUT = ROOT / "data" / "processed" / "investigations.json"
 TAGS_OUTPUT = ROOT / "data" / "processed" / "investigation_tags.json"
 
@@ -58,10 +57,6 @@ CATEGORY_BY_ACRONYM: dict[str, str] = {
     "FLEX": "put out",
     "FLEX-2": "put out",
 }
-
-# Habitat tags only where NASA's objective names the habitat the work is for.
-# None of the current objectives does, so this is empty.
-HABITATS_BY_ID: dict[str, list[str]] = {}
 
 # Hand-written details from the first version of investigations.json, kept so
 # a rebuild does not lose them. Every other investigation gets null here.
@@ -190,15 +185,10 @@ def build_entry(accession: str, meta: dict, page: str) -> dict:
     return entry
 
 
-def build_tag(entry: dict, habitat_names: set[str]) -> dict:
-    habitats = HABITATS_BY_ID.get(entry["id"], [])
-    unknown = [name for name in habitats if name not in habitat_names]
-    if unknown:
-        raise ValueError(f"{entry['id']}: unknown habitat(s) {unknown}")
+def build_tag(entry: dict) -> dict:
     return {
         "id": entry["id"],
         "category": CATEGORY_BY_ACRONYM.get(entry["acronym"] or "", "related"),
-        "habitats": habitats,
     }
 
 
@@ -207,8 +197,7 @@ def build() -> tuple[list[dict], list[dict], dict[str, str]]:
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))["investigations"]
     kept, dropped = split_kept(metadata)
     entries = [build_entry(a, metadata[a], manifest[a]["page"]) for a in kept]
-    habitat_names = {h["name"] for h in json.loads(HABITATS.read_text(encoding="utf-8"))}
-    tags = [build_tag(entry, habitat_names) for entry in entries]
+    tags = [build_tag(entry) for entry in entries]
     return entries, tags, dropped
 
 

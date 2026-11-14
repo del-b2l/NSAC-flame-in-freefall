@@ -193,13 +193,7 @@ def test_tag_categories_are_allowed(tags):
     allowed = {"prevent", "detect", "put out", "related"}
     for tag in tags:
         assert tag["category"] in allowed, tag
-
-
-def test_tag_habitats_are_known(tags):
-    names = {h["name"] for h in load("habitats.json")}
-    for tag in tags:
-        assert isinstance(tag["habitats"], list), tag["id"]
-        assert set(tag["habitats"]) <= names, tag
+        assert "habitats" not in tag, tag
 
 
 def test_dropped_investigations_are_not_combustion(investigations):

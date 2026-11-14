@@ -1,122 +1,98 @@
 [
   {
     "id": "PSI-10",
-    "category": "related",
-    "habitats": []
+    "category": "related"
   },
   {
     "id": "PSI-20",
-    "category": "prevent",
-    "habitats": []
+    "category": "prevent"
   },
   {
     "id": "PSI-21",
-    "category": "related",
-    "habitats": []
+    "category": "related"
   },
   {
     "id": "PSI-22",
-    "category": "related",
-    "habitats": []
+    "category": "related"
   },
   {
     "id": "PSI-23",
-    "category": "related",
-    "habitats": []
+    "category": "related"
   },
   {
     "id": "PSI-25",
-    "category": "prevent",
-    "habitats": []
+    "category": "prevent"
   },
   {
     "id": "PSI-26",
-    "category": "prevent",
-    "habitats": []
+    "category": "prevent"
   },
   {
     "id": "PSI-39",
-    "category": "related",
-    "habitats": []
+    "category": "related"
   },
   {
     "id": "PSI-47",
-    "category": "detect",
-    "habitats": []
+    "category": "detect"
   },
   {
     "id": "PSI-60",
-    "category": "related",
-    "habitats": []
+    "category": "related"
   },
   {
     "id": "PSI-62",
-    "category": "related",
-    "habitats": []
+    "category": "related"
   },
   {
     "id": "PSI-68",
-    "category": "put out",
-    "habitats": []
+    "category": "put out"
   },
   {
     "id": "PSI-69",
-    "category": "put out",
-    "habitats": []
+    "category": "put out"
   },
   {
     "id": "PSI-98",
-    "category": "prevent",
-    "habitats": []
+    "category": "prevent"
   },
   {
     "id": "PSI-99",
-    "category": "prevent",
-    "habitats": []
+    "category": "prevent"
   },
   {
     "id": "PSI-100",
-    "category": "prevent",
-    "habitats": []
+    "category": "prevent"
   },
   {
     "id": "PSI-101",
-    "category": "detect",
-    "habitats": []
+    "category": "detect"
   },
   {
     "id": "PSI-102",
-    "category": "detect",
-    "habitats": []
+    "category": "detect"
   },
   {
     "id": "PSI-106",
-    "category": "related",
-    "habitats": []
+    "category": "related"
   },
   {
     "id": "PSI-107",
-    "category": "related",
-    "habitats": []
+    "category": "related"
   },
   {
     "id": "PSI-115",
-    "category": "related",
-    "habitats": []
+    "category": "related"
   },
   {
     "id": "PSI-117",
-    "category": "related",
-    "habitats": []
+    "category": "related"
   },
   {
     "id": "PSI-142",
-    "category": "related",
-    "habitats": []
+    "category": "related"
   },
   {
     "id": "PSI-159",
-    "category": "related",
-    "habitats": []
+    "category": "related"
   }
 ]
