@@ -24,7 +24,7 @@
     "investigation": "Saffire-VI",
     "material": "SIBAL cloth, 50 cm",
     "oxygen_pct": 31.0,
-    "pressure_psi": 7.9,
+    "pressure_psi": 7.8,
     "airflow": "20 cm/s concurrent",
     "result": "Burn 112 s; O2-calorimetry total 580 kJ (peak 3217 W); max temp 48 C at SFU outlet, 20 C at FFD; CO2 rise 2800 ppm; CO rise 120 ppm",
     "source_url": "https://ntrs.nasa.gov/citations/20240007488"

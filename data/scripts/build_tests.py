@@ -67,6 +67,7 @@ class Source:
     pressure_col: str
     pressure_unit: str
     material_col: str | None = None
+    result_col: str | None = None  # only a column whose header says it is the outcome
 
 
 SOURCES: tuple[Source, ...] = (
@@ -124,6 +125,7 @@ SOURCES: tuple[Source, ...] = (
         pressure_col="Ambient pressure; mmHg",
         pressure_unit="mmHg",
         material_col="Fuel",
+        result_col="Test end",
     ),
     Source(
         accession="PSI-39",
@@ -217,15 +219,17 @@ def build_record(source: Source, row: dict[str, str], investigation: str, page: 
 
     test_id = row.get(source.id_col) or ""
     material = row.get(source.material_col) if source.material_col else None
+    outcome = row.get(source.result_col) if source.result_col else None
     return (
         {
             "id": slug(f"{source.prefix}-{test_id}") if test_id else "",
             "investigation": investigation,
+            "investigation_id": source.accession,
             "material": material or None,
             "oxygen_pct": oxygen_pct,
             "pressure_psi": pressure_psi,
             "airflow": None,
-            "result": None,
+            "result": f"{source.result_col}: {outcome}" if outcome else None,
             "conditions": {**row, "Accession": source.accession, "Table": source.table},
             "source_url": page,
         },
@@ -256,6 +260,10 @@ def build_from_psi(report: list[str]) -> list[dict]:
 
         kept = dropped = 0
         reasons: dict[str, int] = {}
+        # NASA's CFI table repeats some rows with every column the same. A copy
+        # adds nothing, so it is dropped. Rows that share a test id but differ
+        # in any column are real separate rows and are kept with a suffix below.
+        kept_rows: set[tuple[tuple[str, str], ...]] = set()
         for row in read_table(path):
             record, why = build_record(source, row, entry["acronym"] or source.accession, entry["page"])
             if record is None:
@@ -266,6 +274,12 @@ def build_from_psi(report: list[str]) -> list[dict]:
                 dropped += 1
                 reasons["no test id"] = reasons.get("no test id", 0) + 1
                 continue
+            row_key = tuple(sorted((k, str(v)) for k, v in row.items()))
+            if row_key in kept_rows:
+                dropped += 1
+                reasons["exact duplicate row"] = reasons.get("exact duplicate row", 0) + 1
+                continue
+            kept_rows.add(row_key)
             base_id, n = record["id"], 1
             while record["id"] in seen:
                 n += 1
@@ -286,7 +300,14 @@ def build_from_curated(report: list[str]) -> list[dict]:
         report.append("curated  (missing)")
         return []
     rows = json.loads(CURATED.read_text(encoding="utf-8"))
-    kept = [row for row in rows if not str(row.get("id", "")).startswith("fixture-")]
+    kept = []
+    for row in rows:
+        if str(row.get("id", "")).startswith("fixture-"):
+            continue
+        # These come from NTRS, not PSI, so there is no PSI accession to link.
+        record = {"id": row["id"], "investigation": row["investigation"], "investigation_id": None}
+        record.update({k: v for k, v in row.items() if k not in record})
+        kept.append(record)
     report.append(f"curated  kept {len(kept):>3}  ({CURATED.relative_to(ROOT)})")
     return kept
 

@@ -13,7 +13,7 @@
         {
           "test_id": "saffire-vi-2",
           "oxygen_pct": 31.0,
-          "pressure_psi": 7.9,
+          "pressure_psi": 7.8,
           "result": "Burn 112 s",
           "source_url": "https://ntrs.nasa.gov/citations/20240007488"
         }
