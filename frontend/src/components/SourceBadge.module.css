@@ -1,0 +1,50 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 4px;
+  user-select: none;
+  white-space: nowrap;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
+.sizeSm {
+  font-size: 10px;
+  padding: 3px 6px;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.sizeMd {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-width: 1.5px;
+  border-style: solid;
+}
+
+/* Red indicator: Raw NASA Source Data */
+.badgeSource {
+  background: rgba(220, 38, 38, 0.12);
+  color: #ef4444;
+  border-color: #ef4444;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.2);
+}
+
+/* Green indicator: AI Generated Content */
+.badgeAi {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border-color: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.2);
+}
+
+.icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}

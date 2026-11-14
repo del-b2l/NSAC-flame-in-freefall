@@ -1,0 +1,295 @@
+.mainWrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 24px 64px 24px;
+  box-sizing: border-box;
+  color: #f1f5f9;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #080c14;
+  min-height: 100vh;
+}
+
+.appHeader {
+  background: #090d16;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 24px 28px;
+  margin-bottom: 16px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.mainTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: #f8fafc;
+  margin: 0;
+  letter-spacing: -0.02em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #94a3b8;
+  margin: 0;
+  max-width: 800px;
+  line-height: 1.5;
+}
+
+/* Nav Tabs */
+.navTabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid #1e293b;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.tabBtn {
+  background: transparent;
+  color: #94a3b8;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  font-family: ui-monospace, monospace;
+}
+
+.tabBtn:hover {
+  color: #f1f5f9;
+  background: rgba(30, 41, 59, 0.4);
+}
+
+.tabBtnActive {
+  color: #38bdf8;
+  border-bottom-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+}
+
+/* Key Finding 981s Card */
+.findingCard {
+  background: #111827;
+  border: 2px solid #f59e0b;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  text-align: left;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+}
+
+.findingHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.findingTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f59e0b;
+  font-family: ui-monospace, monospace;
+  margin: 0;
+}
+
+.findingQuote {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f8fafc;
+  line-height: 1.6;
+  margin: 0 0 14px 0;
+}
+
+.findingSource {
+  font-size: 13px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Safety Table Section */
+.safetySection {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+  padding: 24px;
+  text-align: left;
+}
+
+.tableContainer {
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: left;
+}
+
+.dataTable th, .dataTable td {
+  border: 1px solid #334155;
+  padding: 12px 14px;
+  vertical-align: top;
+}
+
+.dataTable th {
+  background: #1e293b;
+  color: #f8fafc;
+  font-weight: 700;
+  font-family: ui-monospace, monospace;
+}
+
+.dataTable td {
+  background: #0f172a;
+  color: #cbd5e1;
+}
+
+.testedPill {
+  display: inline-block;
+  background: rgba(14, 165, 233, 0.15);
+  color: #38bdf8;
+  border: 1px solid #0284c7;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.notTested {
+  color: #64748b;
+  font-style: italic;
+}
+
+/* Investigations Grid */
+.invGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  text-align: left;
+}
+
+.invCard {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 6px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.invCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.invTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+  font-family: ui-monospace, monospace;
+}
+
+.categoryPill {
+  background: #1e293b;
+  color: #38bdf8;
+  border: 1px solid #0369a1;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.invDetail {
+  font-size: 13px;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+.invDetail strong {
+  color: #94a3b8;
+}
+
+/* PDA Subtabs */
+.pdaContainer {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+  padding: 24px;
+  text-align: left;
+}
+
+.pdaBtnRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.pdaBtn {
+  background: #1f2937;
+  color: #cbd5e1;
+  border: 1px solid #374151;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pdaBtnActive {
+  background: #0284c7;
+  color: #fff;
+  border-color: #38bdf8;
+}
+
+/* Footer */
+.footer {
+  margin-top: 48px;
+  padding-top: 18px;
+  border-top: 1px solid #1e293b;
+  font-size: 13px;
+  color: #64748b;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footerLinks {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.footerLink {
+  color: #38bdf8;
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  text-decoration: underline;
+}
