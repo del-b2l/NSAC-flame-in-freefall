@@ -16,6 +16,9 @@ app.add_middleware(
 from backend.explain import router as explain_router
 app.include_router(explain_router)
 
+from backend.safety import router as safety_router
+app.include_router(safety_router)
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
