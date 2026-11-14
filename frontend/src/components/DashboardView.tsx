@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import styles from './DashboardView.module.css';
 import type { Habitat, TestRecord } from '../types';
 import HabitatPicker from './HabitatPicker';
@@ -30,21 +30,92 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [activeTab, setActiveTab] = useState<'rank' | 'investigations' | 'pda' | 'safety'>('rank');
   const [pdaCategory, setPdaCategory] = useState<'Prevent' | 'Detect' | 'Put out'>('Prevent');
   const [explainTarget, setExplainTarget] = useState<TestRecord | null>(null);
+  const [introComplete, setIntroComplete] = useState(false);
+  const titleGroupRef = useRef<HTMLDivElement>(null);
+  const planetRef = useRef<HTMLImageElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
   const pdaFiltered = MOCK_INVESTIGATIONS.filter((inv) => inv.cat === pdaCategory);
 
+  useLayoutEffect(() => {
+    if (introComplete) {
+      return;
+    }
+
+    const titleGroup = titleGroupRef.current;
+    const planet = planetRef.current;
+    const title = titleRef.current;
+
+    if (!titleGroup || !planet || !title) {
+      setIntroComplete(true);
+      return;
+    }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setIntroComplete(true);
+      return;
+    }
+
+    const previousOverflow = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+
+    const bounds = titleGroup.getBoundingClientRect();
+    const planetSize = Math.min(240, Math.max(150, window.innerWidth * 0.28));
+    const translateX = window.innerWidth / 2 - bounds.left - planetSize / 2;
+    const translateY = window.innerHeight / 2 - bounds.top - planetSize / 2;
+    const easing = 'cubic-bezier(0.22, 1, 0.36, 1)';
+
+    const groupAnimation = titleGroup.animate(
+      [
+        { transform: `translate3d(${translateX}px, ${translateY}px, 0)` },
+        { transform: 'translate3d(0, 0, 0)' },
+      ],
+      { delay: 400, duration: 1650, easing, fill: 'both' }
+    );
+    const planetAnimation = planet.animate(
+      [{ width: `${planetSize}px`, height: `${planetSize}px` }, { width: '44px', height: '44px' }],
+      { delay: 400, duration: 1650, easing, fill: 'both' }
+    );
+    const titleAnimation = title.animate(
+      [
+        {
+          clipPath: 'inset(0 100% 0 0)',
+          opacity: 0,
+          transform: 'translateX(-22px) scaleX(0.88)',
+        },
+        { clipPath: 'inset(0 0 0 0)', opacity: 1, transform: 'translateX(0) scaleX(1)' },
+      ],
+      {
+        delay: 700,
+        duration: 1000,
+        easing,
+        fill: 'both',
+      }
+    );
+
+    groupAnimation.onfinish = () => setIntroComplete(true);
+
+    return () => {
+      groupAnimation.cancel();
+      planetAnimation.cancel();
+      titleAnimation.cancel();
+      document.documentElement.style.overflow = previousOverflow;
+    };
+  }, [introComplete]);
+
   return (
-    <div className={styles.mainWrapper}>
+    <div className={`${styles.mainWrapper} ${introComplete ? '' : styles.opening}`}>
       {/* App Header with Rotating Planet Logo */}
       <header className={styles.appHeader}>
         <div className={styles.titleRow}>
-          <div className={styles.titleWithIcon}>
+          <div className={styles.titleWithIcon} ref={titleGroupRef}>
             <img
               src={selectedHabitat.planetGif || '/assets/planets/earth_spin.gif'}
               alt="Spinning Planet Emblem"
               className={styles.headerPlanet}
+              ref={planetRef}
             />
-            <h1 className={styles.mainTitle}>FLAME IN FREEFALL</h1>
+            <h1 className={styles.mainTitle} ref={titleRef}>FLAME IN FREEFALL</h1>
           </div>
           <SourceBadge kind="source" label="[Data from source: NASA Physical Sciences]" size="md" />
         </div>

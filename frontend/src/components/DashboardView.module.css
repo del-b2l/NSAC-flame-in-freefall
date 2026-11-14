@@ -10,6 +10,23 @@
   min-height: 100vh;
 }
 
+.opening > :not(.appHeader),
+.opening .appHeader > :not(.titleRow),
+.opening .titleRow > :not(.titleWithIcon) {
+  visibility: hidden;
+}
+
+.opening .appHeader {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.opening .titleWithIcon {
+  position: relative;
+  z-index: 1;
+}
+
 .appHeader {
   background: #090d16;
   border: 1px solid #1e293b;
