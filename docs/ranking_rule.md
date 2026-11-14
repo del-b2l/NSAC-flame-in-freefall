@@ -1,35 +1,134 @@
 # Ranking rule
 
+Owner: Shaheer. Code: `backend/ranking.py`. Tests: `backend/tests/test_ranking.py`.
+If this document and the code disagree, one of them is a bug and the pull
+request that changes it must change both.
+
 ## In plain words
 
-When a user picks a habitat, every NASA test is sorted so that the tests with conditions closest to that habitat appear first.
+When a user picks a habitat, every NASA test is sorted so that the tests whose
+air is closest to that habitat appear first.
 
-"Closest" means two things are compared: oxygen % and pressure (psi). A test whose oxygen and pressure are near the habitat's values ranks higher than one that is far away.
+"Closest" means two numbers are compared: oxygen % and pressure (psi). A test
+whose oxygen and pressure are near the habitat's values ranks higher than one
+that is far away.
 
-Airflow is added on Friday, once the official data is in.
-
-## Provisional rule (Shaheer confirms the exact numbers on Thursday)
+## The rule
 
 For each test:
 
-1. Oxygen difference = the test's oxygen % minus the habitat's oxygen %, as a positive number.
-2. Pressure difference = the test's pressure in psi minus the habitat's pressure in psi, as a positive number.
-3. Distance = oxygen difference + pressure difference.
-4. Sort by distance, smallest first. Smallest distance means the best match, so it goes at the top.
+1. **Oxygen gap** = the test's oxygen % minus the habitat's oxygen %, as a
+   positive number.
+2. **Pressure gap** = the test's pressure in psi minus the habitat's pressure
+   in psi, as a positive number.
+3. **Distance** = oxygen gap + pressure gap. One mol % of oxygen counts exactly
+   the same as one psi of pressure.
+4. **Sort** by distance, smallest first. The smallest distance is the best
+   match, so it goes at the top.
 
-Example, with the Moon base habitat (oxygen 30%, pressure 10.2 psi) and the Saffire VI-3 test (oxygen 30.3%, pressure 7.9 psi):
+Units are used exactly as NASA reports them (mol % and psi). Nothing is
+normalised, weighted, or rescaled, so every number on screen can be checked by
+hand against the source.
 
-- Oxygen difference: 0.3
-- Pressure difference: 2.3
-- Distance: 2.6
+### Worked example
+
+Moon base habitat (oxygen 30%, pressure 10.2 psi) and the Saffire VI-3 test
+(oxygen 30.3%, pressure 7.9 psi):
+
+- Oxygen gap: 0.3
+- Pressure gap: 2.3
+- Distance: **2.6**
+
+### The order this produces today
+
+Real records from `data/processed/tests.json`, nearest first:
+
+| Habitat | Order |
+|---|---|
+| Earth | `saffire-iv-1` (1.2) → `saffire-v-2` (9.6) → `saffire-vi-4` (14.5) → `saffire-vi-3` (16.1) → `saffire-vi-2` (16.8) |
+| Space station | same as Earth |
+| Moon base | `saffire-vi-3` (2.6) → `saffire-vi-2` (3.3) → `saffire-vi-4` (3.4) → `saffire-v-2` (3.9) → `saffire-iv-1` (12.3) |
+| Rover | same as Moon base |
+| Spacesuit | `saffire-vi-2` (72.6) → `saffire-vi-3` (73.3) → `saffire-vi-4` (74.9) → `saffire-v-2` (79.8) → `saffire-iv-1` (88.2) |
+
+The Spacesuit row is not a mistake. No NASA test burned material in 100%
+oxygen, so every distance there is above 70 and "closest" means "least far",
+not "similar".
+
+## Airflow
+
+Airflow is **not** part of the distance. It is a tie-break.
+
+NASA does not publish an airflow figure for Earth, the space station, a Moon
+base, a rover, or a spacesuit, and `data/processed/habitats.json` has no
+airflow field. Adding one would mean inventing five numbers, which breaks the
+schema rule "Missing values are `null`. Never guess" and would cost us marks on
+Validity for no gain.
+
+So airflow is used where it is honest to use it:
+
+- Two tests whose distances fall in the same **half-unit band** (0.5 wide) are
+  treated as equally close.
+- Inside that band, a test with a recorded airflow ranks above one without,
+  because the source actually documented its air movement.
+- A blank or whitespace-only `airflow` counts as missing.
+- Airflow never outranks a test that is further away by 0.5 or more.
+
+Airflow is free text (`20 cm/s concurrent, cut to 5 cm/s at 1120 s`), so it is
+shown to the user as written and never parsed into a number.
 
 ## Rules for missing values
 
-- A test with no oxygen value or no pressure value is not dropped. It is placed at the bottom, after every test that has both values.
-- Never guess a missing value to make a test rank higher.
+- A test with no oxygen value or no pressure value keeps its place in the list:
+  it goes at the bottom, after every test that has both.
+- Its distance is not computed, and no value is inferred from another test or
+  from the habitat.
+- Two tests that both lack oxygen or pressure are ordered by `id`, so the order
+  never changes between requests.
+
+## Ties
+
+After distance, the remaining tie-breaks are: recorded airflow, then `id`.
+Two identical requests therefore always return the same order, which keeps the
+screen stable and the tests repeatable.
 
 ## Text shown on the dashboard
 
-This sentence appears on screen next to the ranked list. Muntaha copies it exactly:
+This sentence appears on screen next to the ranked list. Muntaha copies it
+exactly, and it must not change without telling her:
 
-"Tests score higher when their oxygen and pressure are closer to this habitat."
+> "Tests score higher when their oxygen and pressure are closer to this habitat."
+
+The sentence stays true while airflow is only a tie-break, so it does not need
+to mention airflow.
+
+## For the slides (one paragraph)
+
+> We sort NASA's fire tests by how close their air is to the habitat the user
+> picked. For each test we measure two gaps: oxygen, in mol %, and pressure, in
+> psi. We add them, and the smallest total goes first. A Moon base runs at 30%
+> oxygen and 10.2 psi, so Saffire VI-3, at 30.3% and 7.9 psi, scores 2.6 and
+> tops that list. We do not invent numbers: a test missing oxygen or pressure is
+> shown at the bottom rather than guessed, and airflow only breaks near-ties
+> because NASA never published airflow for these habitats.
+
+## Two-minute explanation (Sunday)
+
+1. **What the page does.** Pick a habitat; the list re-sorts by how similar each
+   NASA test's air was.
+2. **The measurement.** Two gaps, absolute values, added. Units as published,
+   no weights, so anyone can check a row by hand.
+3. **Why it is valid.** Every number comes from a source link in the record. No
+   normalisation, no model, no inference.
+4. **The honest limitation.** Nothing burned at 100% oxygen, so the Spacesuit
+   ranking is "least far", not "similar" — and we say so on screen.
+5. **Airflow.** NASA gives no habitat airflow figure, so it is a tie-break, not
+   a fake third axis.
+6. **Missing data.** Kept and ranked last; two records in the real data exercise
+   exactly that path.
+
+## How this was checked
+
+`python -m pytest backend/tests -q` → 21 passed, against the 7 records in
+`data/processed/tests.json` and the 5 habitats in `data/processed/habitats.json`.
+Last run: Saturday 14 November 2026.
