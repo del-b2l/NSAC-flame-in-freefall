@@ -8,16 +8,22 @@ Backend: see backend/README (uvicorn backend.main:app --reload)
 Frontend: cd frontend && npm install && npm run dev
 
 ## Data
-The app reads `data/processed/tests.json`: 994 NASA tests, each with a source
+The app reads `data/processed/tests.json`: 986 NASA tests, each with a source
 link. It is generated, never edited by hand.
 
 ```bash
-python data/scripts/fetch_psi.py    # NASA PSI tables -> data/raw/psi/ (gitignored)
-python data/scripts/build_tests.py  # raw + curated Saffire -> data/processed/tests.json
+python data/scripts/fetch_psi.py             # NASA PSI tables + metadata -> data/raw/psi/ (gitignored)
+python data/scripts/build_tests.py           # raw + curated Saffire -> data/processed/tests.json
+python data/scripts/build_investigations.py  # PSI metadata -> data/processed/investigations.json, investigation_tags.json
+python data/scripts/build_report.py          # processed files -> docs/data_report.md
 ```
 
-See `data/raw/README.md` for what was fetched and `docs/ranking_rule.md` for how
-the records are ranked.
+Each build script also takes `--check`, which exits with an error if its output
+is out of date.
+
+See `data/raw/README.md` for what was fetched, `docs/data_report.md` for the
+per-investigation numbers, and `docs/ranking_rule.md` for how the records are
+ranked.
 
 ## Tests
 ```bash
