@@ -50,20 +50,30 @@ Moon base habitat (oxygen 30%, pressure 10.2 psi) and the Saffire VI-3 test
 - Pressure gap: 2.3
 - Distance: **2.6**
 
+That 2.6 is the closest any Saffire fire test gets to a Moon base, and it is
+15th of the 994 records. The 14 ahead of it are FLEX droplet tests that NASA
+ran at 30% oxygen and 10.2–10.5 psi, which is almost exactly Moon-base air, so
+they score 0.13 to 0.46. That is the ranking doing its job, not an error.
+
 ### The order this produces today
 
-Real records from `data/processed/tests.json`, nearest first:
+Real records from `data/processed/tests.json` (994 records), nearest first:
 
-| Habitat | Order |
+| Habitat | First five |
 |---|---|
-| Earth | `saffire-iv-1` (1.2) → `saffire-v-2` (9.6) → `saffire-vi-4` (14.5) → `saffire-vi-3` (16.1) → `saffire-vi-2` (16.8) |
+| Earth | `cfi-1206` (0.00) → `cfi-1207` (0.00) → `cfi-1208` (0.00) → `cfi-1209` (0.00) → `cfi-1210` (0.00) |
 | Space station | same as Earth |
-| Moon base | `saffire-vi-3` (2.6) → `saffire-vi-2` (3.3) → `saffire-vi-4` (3.4) → `saffire-v-2` (3.9) → `saffire-iv-1` (12.3) |
+| Moon base | `flex-219f001` (0.13) → `flex-223f002` (0.14) → `flex-219r001` (0.15) → `flex-223f001` (0.15) → `flex-191r001` (0.19) |
 | Rover | same as Moon base |
-| Spacesuit | `saffire-vi-2` (72.6) → `saffire-vi-3` (73.3) → `saffire-vi-4` (74.9) → `saffire-v-2` (79.8) → `saffire-iv-1` (88.2) |
+| Spacesuit | `acme-fd-inverse-21349a1` (16.96) → `acme-fd-inverse-21349b1` (16.99) → `acme-fd-inverse-22024g1` (18.09) → `acme-fd-inverse-22024h1` (18.11) → `acme-fd-inverse-22035j1` (18.12) |
+
+The Earth row is a five-way tie at distance 0.00: CFI ran at 21% oxygen and
+1 atm, so `id` decides the order. Many FLEX tests share the same ambient
+conditions, which is why ties are common and why the last tie-break has to be
+stable.
 
 The Spacesuit row is not a mistake. No NASA test burned material in 100%
-oxygen, so every distance there is above 70 and "closest" means "least far",
+oxygen, so every distance there is above 16 and "closest" means "least far",
 not "similar".
 
 ## Airflow
@@ -87,6 +97,28 @@ So airflow is used where it is honest to use it:
 
 Airflow is free text (`20 cm/s concurrent, cut to 5 cm/s at 1120 s`), so it is
 shown to the user as written and never parsed into a number.
+
+## Where the data comes from
+
+`data/processed/tests.json` holds 994 records built by
+`data/scripts/build_tests.py`:
+
+| Source | Records | Oxygen and pressure from |
+|---|---|---|
+| CFI-G, normal flames (PSI-159) | 179 | `XO2 before test` (mole fraction), `approx p` (bar) |
+| CFI-G, inverse flames (PSI-159) | 154 | `XO2`, `approx p` (bar) |
+| CFI (PSI-39) | 87 | `Oxygen` (mole fraction), `Pressure` (`1 atm`) |
+| ACME / Flame Design, normal (PSI-10) | 187 | `XO2 (init)`, `pmean (atm)` |
+| ACME / Flame Design, inverse (PSI-10) | 109 | `XO2`, `pmean (atm)` |
+| FLEX (PSI-69) | 273 | `O initial ambient composition`, `Ambient pressure; mmHg` |
+| Saffire IV–VI | 5 | hand-transcribed from the NTRS paper |
+
+Every row in the PSI tables is one test. A row is only shipped when it has a
+numeric oxygen value, a numeric pressure and a source link; 893 rows were
+dropped because the table leaves one of those blank (mostly inverse-flame rows
+with no oxygen). The counts and reasons are printed by
+`python data/scripts/build_tests.py --dry-run`, and `data/raw/README.md` logs
+the files and their hashes.
 
 ## Rules for missing values
 
@@ -118,10 +150,14 @@ to mention airflow.
 > We sort NASA's fire tests by how close their air is to the habitat the user
 > picked. For each test we measure two gaps: oxygen, in mol %, and pressure, in
 > psi. We add them, and the smallest total goes first. A Moon base runs at 30%
-> oxygen and 10.2 psi, so Saffire VI-3, at 30.3% and 7.9 psi, scores 2.6 and
-> tops that list. We do not invent numbers: a test missing oxygen or pressure is
-> shown at the bottom rather than guessed, and airflow only breaks near-ties
-> because NASA never published airflow for these habitats.
+> oxygen and 10.2 psi, so a FLEX droplet test at 30% and 10.33 psi scores 0.13
+> and tops that list, and Saffire VI-3, at 30.3% and 7.9 psi, scores 2.6 as the
+> closest Saffire fire test. We do not invent numbers: a test missing oxygen or
+> pressure is shown at the bottom rather than guessed, and airflow only breaks
+> near-ties because NASA never published airflow for these habitats.
+>
+> Everything is traceable: 994 records, each one linked to the NASA table it
+> came from, built by a script that refuses to emit a row without a source.
 
 ## Two-minute explanation (Sunday)
 
@@ -135,11 +171,17 @@ to mention airflow.
    ranking is "least far", not "similar" — and we say so on screen.
 5. **Airflow.** NASA gives no habitat airflow figure, so it is a tie-break, not
    a fake third axis.
-6. **Missing data.** Kept and ranked last; two records in the real data exercise
-   exactly that path.
+6. **Missing data.** Kept and ranked last; `data/sample/edge_cases.json` holds
+   two sample rows that exercise exactly that path, and the tests check them.
 
 ## How this was checked
 
-`python -m pytest backend/tests -q` → 21 passed, against the 7 records in
-`data/processed/tests.json` and the 5 habitats in `data/processed/habitats.json`.
-Last run: Saturday 14 November 2026.
+```
+python -m pytest backend/tests data/tests -q   # 66 passed
+python data/scripts/build_tests.py --check     # data/processed/tests.json is up to date
+```
+
+That is 66 tests: the ranking rule with synthetic records, the unit converters
+with inline values, and the shipped dataset (unique ids, a source link on every
+record, oxygen and pressure inside plausible ranges, five records pinned to
+hand-checked rows). Last run: Saturday 14 November 2026.

@@ -5,7 +5,9 @@ Owner: Shaheer. The rule these tests check is written out in
 bug and the PR that changes it has to change both.
 """
 
+import json
 import math
+from pathlib import Path
 
 import pytest
 
@@ -125,6 +127,19 @@ def test_missing_oxygen_goes_after_every_scored_test():
 def test_missing_values_are_kept_not_dropped():
     tests = [make("scored", 30.0, 10.2), make("empty"), make("half", 30.0, None)]
     assert sorted(ids(rank_tests(tests, MOON_BASE))) == ["empty", "half", "scored"]
+
+
+def test_sample_edge_cases_rank_last_for_every_habitat():
+    """The two records in data/sample/edge_cases.json exercise the null path.
+
+    They are sample-only rows, never part of data/processed/tests.json.
+    """
+    path = Path(__file__).resolve().parents[2] / "data" / "sample" / "edge_cases.json"
+    edge = [Record(**row) for row in json.loads(path.read_text(encoding="utf-8"))]
+    for habitat in load_habitats():
+        ranked = rank_tests(edge, habitat)
+        assert sorted(ids(ranked)) == ["sample-no-values", "sample-oxygen-only"]
+        assert all(_distance(test, habitat) is None for test in ranked)
 
 
 # --- shape and stability ---------------------------------------------------
