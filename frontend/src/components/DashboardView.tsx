@@ -59,22 +59,40 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     const previousOverflow = document.documentElement.style.overflow;
     document.documentElement.style.overflow = 'hidden';
 
-    const bounds = titleGroup.getBoundingClientRect();
+    const planetBounds = planet.getBoundingClientRect();
+    const groupBounds = titleGroup.getBoundingClientRect();
     const planetSize = Math.min(240, Math.max(150, window.innerWidth * 0.28));
-    const translateX = window.innerWidth / 2 - bounds.left - planetSize / 2;
-    const translateY = window.innerHeight / 2 - bounds.top - planetSize / 2;
-    const easing = 'cubic-bezier(0.22, 1, 0.36, 1)';
+    const titleSeparation = (planetSize - planetBounds.width) / 2;
+    const centerX = window.innerWidth / 2 - (groupBounds.left + groupBounds.width / 2);
+    const centerY = window.innerHeight / 2 - (groupBounds.top + groupBounds.height / 2);
+    const planetCentered = `translate3d(${window.innerWidth / 2 - (planetBounds.left + planetBounds.width / 2)}px, ${window.innerHeight / 2 - (planetBounds.top + planetBounds.height / 2)}px, 0)`;
+    const compositionCentered = `translate3d(${centerX - titleSeparation}px, ${centerY}px, 0)`;
+    const settleEasing = 'cubic-bezier(0.22, 1, 0.36, 1)';
+    const revealStart = 350 / 6000;
+    const revealEnd = 1500 / 6000;
+    const travelStart = 0.675;
 
     const groupAnimation = titleGroup.animate(
       [
-        { transform: `translate3d(${translateX}px, ${translateY}px, 0)` },
-        { transform: 'translate3d(0, 0, 0)' },
+        { transform: planetCentered, offset: 0, easing: 'linear' },
+        {
+          transform: planetCentered,
+          offset: revealStart,
+          easing: settleEasing,
+        },
+        { transform: compositionCentered, offset: revealEnd, easing: 'linear' },
+        { transform: compositionCentered, offset: travelStart, easing: settleEasing },
+        { transform: 'translate3d(0, 0, 0)', offset: 1 },
       ],
-      { delay: 400, duration: 1650, easing, fill: 'both' }
+      { duration: 6000, fill: 'both' }
     );
     const planetAnimation = planet.animate(
-      [{ width: `${planetSize}px`, height: `${planetSize}px` }, { width: '44px', height: '44px' }],
-      { delay: 400, duration: 1650, easing, fill: 'both' }
+      [
+        { transform: `scale(${planetSize / 44})`, offset: 0 },
+        { transform: `scale(${planetSize / 44})`, offset: travelStart, easing: settleEasing },
+        { transform: 'scale(1)', offset: 1 },
+      ],
+      { duration: 6000, fill: 'both' }
     );
     const titleAnimation = title.animate(
       [
@@ -82,13 +100,32 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           clipPath: 'inset(0 100% 0 0)',
           opacity: 0,
           transform: 'translateX(-22px) scaleX(0.88)',
+          offset: 0,
         },
-        { clipPath: 'inset(0 0 0 0)', opacity: 1, transform: 'translateX(0) scaleX(1)' },
+        {
+          clipPath: 'inset(0 100% 0 0)',
+          opacity: 0,
+          transform: 'translateX(-22px) scaleX(0.88)',
+          offset: revealStart,
+          easing: settleEasing,
+        },
+        {
+          clipPath: 'inset(0 0 0 0)',
+          opacity: 1,
+          transform: `translateX(${titleSeparation}px) scaleX(1)`,
+          offset: revealEnd,
+        },
+        {
+          clipPath: 'inset(0 0 0 0)',
+          opacity: 1,
+          transform: `translateX(${titleSeparation}px) scaleX(1)`,
+          offset: travelStart,
+          easing: settleEasing,
+        },
+        { clipPath: 'inset(0 0 0 0)', opacity: 1, transform: 'translateX(0) scaleX(1)', offset: 1 },
       ],
       {
-        delay: 700,
-        duration: 1000,
-        easing,
+        duration: 6000,
         fill: 'both',
       }
     );
