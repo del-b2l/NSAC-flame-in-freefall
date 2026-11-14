@@ -51,6 +51,7 @@ PSI_PER: dict[str, float] = {
 }
 
 OXYGEN_RANGE = (1.0, 100.0)  # mol %
+OXYGEN_CONTEXTS = ("chamber_air", "burner_gas", "unknown")
 PRESSURE_RANGE = (0.5, 100.0)  # psi
 
 
@@ -68,6 +69,10 @@ class Source:
     pressure_unit: str
     material_col: str | None = None
     result_col: str | None = None  # only a column whose header says it is the outcome
+    # Where the oxygen value was measured. In the inverse-flame tables the oxygen
+    # is the gas fed through the burner (they list an O2 flow rate, and the fuel
+    # fraction is the chamber value), so it is not the air around the flame.
+    oxygen_context: str = "chamber_air"
 
 
 SOURCES: tuple[Source, ...] = (
@@ -86,6 +91,7 @@ SOURCES: tuple[Source, ...] = (
         accession="PSI-159",
         table="PSI-159_Experimental table_CFI-G_Inverse Flames.csv",
         prefix="cfig-inverse",
+        oxygen_context="burner_gas",
         id_col="Test",
         oxygen_col="XO2",
         oxygen_scale=100.0,
@@ -108,6 +114,7 @@ SOURCES: tuple[Source, ...] = (
         accession="PSI-10",
         table="PSI-10_Experimental table_Flame Design_Inverse Flame.csv",
         prefix="acme-fd-inverse",
+        oxygen_context="burner_gas",
         id_col="Test",
         oxygen_col="XO2",
         oxygen_scale=100.0,
@@ -192,11 +199,24 @@ def slug(text: str) -> str:
 # --- building --------------------------------------------------------------
 
 
+# The FLEX table marks "no value" with a Windows-1252 dash (byte 0x96), which is
+# not valid UTF-8 and decodes to the replacement character.
+NO_VALUE_MARKS = {"�", "–", "—"}
+
+
+def clean_cell(value: str) -> str:
+    """Strip a cell, and turn a lone no-value dash into an empty string."""
+    if not isinstance(value, str):
+        return value
+    text = value.strip()
+    return "" if text in NO_VALUE_MARKS else text
+
+
 def read_table(path: Path) -> list[dict[str, str]]:
     text = path.read_text(encoding="utf-8-sig", errors="replace")
     reader = csv.DictReader(text.splitlines())
     return [
-        {normalise_key(k): (v.strip() if isinstance(v, str) else v) for k, v in row.items() if k}
+        {normalise_key(k): clean_cell(v) for k, v in row.items() if k}
         for row in reader
     ]
 
@@ -227,6 +247,7 @@ def build_record(source: Source, row: dict[str, str], investigation: str, page: 
             "investigation_id": source.accession,
             "material": material or None,
             "oxygen_pct": oxygen_pct,
+            "oxygen_context": source.oxygen_context,
             "pressure_psi": pressure_psi,
             "airflow": None,
             "result": f"{source.result_col}: {outcome}" if outcome else None,
@@ -307,6 +328,9 @@ def build_from_curated(report: list[str]) -> list[dict]:
         # These come from NTRS, not PSI, so there is no PSI accession to link.
         record = {"id": row["id"], "investigation": row["investigation"], "investigation_id": None}
         record.update({k: v for k, v in row.items() if k not in record})
+        record.setdefault("oxygen_context", "unknown")
+        if record["oxygen_context"] not in OXYGEN_CONTEXTS:
+            raise ValueError(f"{row['id']}: unknown oxygen_context {record['oxygen_context']!r}")
         kept.append(record)
     report.append(f"curated  kept {len(kept):>3}  ({CURATED.relative_to(ROOT)})")
     return kept

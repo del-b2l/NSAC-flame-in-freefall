@@ -13,6 +13,7 @@ One record is one test: one row of a NASA test matrix, or one run of one experim
 | `investigation_id` | string or null | yes (key always present) | Investigation ID as in the PSI Data Repository; null for records not from PSI (Saffire IV-VI, from NTRS) | `PSI-102` |
 | `material` | string or null | no | Sample material with size or thickness | `Two-sided PMMA, 1 cm thick, 18 cm` |
 | `oxygen_pct` | number or null | no | Oxygen concentration, in mol % | `30.3` |
+| `oxygen_context` | string | yes | Where the oxygen value was measured: `chamber_air` (the air around the flame), `burner_gas` (the gas fed through the burner, as in inverse flames) or `unknown` | `chamber_air` |
 | `pressure_psi` | number or null | no | Total ambient pressure, in psi | `7.9` |
 | `airflow` | string or null | no | Air speed and direction | `20 cm/s concurrent` |
 | `result` | string or null | no | Short outcome, copied from the source | `Burn 780 s; O2-calorimetry total 1280 kJ` |

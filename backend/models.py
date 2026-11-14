@@ -1,25 +1,27 @@
+
 from pydantic import BaseModel, Field
-from typing import Optional, Union
+
 
 class TestRecord(BaseModel):
     id: str
     investigation: str
-    investigation_id: Optional[str] = None
-    material: Optional[str] = None
-    oxygen_pct: Optional[float] = None
-    pressure_psi: Optional[float] = None
-    airflow: Optional[str] = None
-    result: Optional[str] = None
-    conditions: dict[str, Union[str, float, int, None]] = Field(default_factory=dict)
-    source_url: Optional[str] = None
+    investigation_id: str | None = None
+    material: str | None = None
+    oxygen_pct: float | None = None
+    oxygen_context: str | None = None
+    pressure_psi: float | None = None
+    airflow: str | None = None
+    result: str | None = None
+    conditions: dict[str, str | float | int | None] = Field(default_factory=dict)
+    source_url: str | None = None
 
 class Habitat(BaseModel):
     name: str
     oxygen_pct: float
     pressure_psi: float
-    status: Optional[str] = None
-    source_url: Optional[str] = None
-    note: Optional[str] = None
+    status: str | None = None
+    source_url: str | None = None
+    note: str | None = None
 
 class RankRequest(BaseModel):
     habitat: str   # a habitat name, e.g. "Moon base"

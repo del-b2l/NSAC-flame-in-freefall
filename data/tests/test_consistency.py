@@ -221,3 +221,15 @@ def test_build_investigations_check_passes():
 )
 def test_build_report_check_passes():
     assert build_report.main(["--check"]) == 0
+
+
+def test_every_record_says_where_its_oxygen_was_measured(records):
+    allowed = {"chamber_air", "burner_gas", "unknown"}
+    bad = [record["id"] for record in records if record.get("oxygen_context") not in allowed]
+    assert bad == []
+
+
+def test_inverse_flame_oxygen_is_marked_as_burner_gas(records):
+    for record in records:
+        is_inverse = str(record.get("conditions", {}).get("Flame Type", "")).lower() == "inverse"
+        assert (record["oxygen_context"] == "burner_gas") == is_inverse, record["id"]
