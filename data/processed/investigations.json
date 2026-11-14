@@ -1,0 +1,80 @@
+[
+  {
+    "id": "PSI-106",
+    "name": "SLICE (Structure and Liftoff in Combustion Experiment)",
+    "type": "Microgravity Investigation",
+    "objective": "Understand the structure and stability of laminar diffusion flames in microgravity, including liftoff velocity limits for different fuels and burner diameters.",
+    "fuels": "Methane, ethylene, nitrogen-diluted mixtures",
+    "hardware": "Fan-driven flow duct with exchangeable burner tubes (Microgravity Science Glovebox)",
+    "sensors": "Flow rate and temperature sensors; high-resolution camera",
+    "sample_size": null,
+    "variables": "Burner diameter, coflow velocity, fuel composition",
+    "related_investigations": [],
+    "landing_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-106"
+  },
+  {
+    "id": "PSI-159",
+    "name": "ACME Cool Flames Investigation with Gases (CFI-G)",
+    "type": "Microgravity Investigation",
+    "objective": "Determine the conditions under which cool diffusion flames occur for propane, n-butane and n-pentane.",
+    "fuels": "Propane, n-butane, n-pentane",
+    "hardware": "ACME hardware in the Combustion Integrated Rack (ISS)",
+    "sensors": null,
+    "sample_size": null,
+    "variables": "Reactant dilution, flow rate, pressure, flow direction",
+    "related_investigations": [],
+    "landing_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-159"
+  },
+  {
+    "id": "PSI-10",
+    "name": "ACME Flame Design",
+    "type": "Microgravity Investigation",
+    "objective": "Obtain soot-inception limits of spherical diffusion flames as functions of flow rate and dilution.",
+    "fuels": null,
+    "hardware": "ACME hardware in the Combustion Integrated Rack (ISS); drop towers",
+    "sensors": null,
+    "sample_size": null,
+    "variables": "Reactant dilution, flow rate, pressure, flow direction",
+    "related_investigations": [],
+    "landing_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-10"
+  },
+  {
+    "id": "PSI-60",
+    "name": "Computational and Experimental Analysis of SPICE Data Sets",
+    "type": "Ground Investigation",
+    "objective": "Understand why soot formation differs between normal-gravity and microgravity flames.",
+    "fuels": null,
+    "hardware": null,
+    "sensors": "Camera images analysed with color-ratio pyrometry",
+    "sample_size": null,
+    "variables": null,
+    "related_investigations": ["SPICE"],
+    "landing_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-60"
+  },
+  {
+    "id": "PSI-62",
+    "name": "Concurrent Flame Spread Modeling with Comparison to BASS Experiments",
+    "type": "Ground Investigation",
+    "objective": "Develop and validate flamelet-based models of concurrent flame spread in microgravity.",
+    "fuels": null,
+    "hardware": null,
+    "sensors": "Two-color tomography of BASS and BASS-II imagery",
+    "sample_size": null,
+    "variables": null,
+    "related_investigations": ["BASS", "BASS-II"],
+    "landing_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-62"
+  },
+  {
+    "id": "PSI-117",
+    "name": "External Thermo-Convective Perturbation on Cool Flame Dynamics",
+    "type": "Ground Investigation",
+    "objective": "Use FLEX flight data to quantify how external thermal and convective perturbations affect cool flame dynamics.",
+    "fuels": "n-alkane droplets",
+    "hardware": null,
+    "sensors": null,
+    "sample_size": null,
+    "variables": null,
+    "related_investigations": ["FLEX"],
+    "landing_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-117"
+  }
+]

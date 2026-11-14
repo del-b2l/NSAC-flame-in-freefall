@@ -9,6 +9,7 @@ class TestRecord(BaseModel):
     pressure_psi: Optional[float] = None
     airflow: Optional[str] = None
     result: Optional[str] = None
+    conditions:Optional[dict] = None
     source_url: Optional[str] = None
 
 class Habitat(BaseModel):

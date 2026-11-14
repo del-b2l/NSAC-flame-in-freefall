@@ -1,0 +1,61 @@
+{
+  "materials": [
+    {
+      "material": "SIBAL cloth, 50 cm",
+      "tests": [
+        {
+          "test_id": "saffire-iv-1",
+          "oxygen_pct": 22.0,
+          "pressure_psi": 14.5,
+          "result": "Burn 130 s",
+          "source_url": "https://ntrs.nasa.gov/citations/20240007488"
+        },
+        {
+          "test_id": "saffire-vi-2",
+          "oxygen_pct": 31.0,
+          "pressure_psi": 7.9,
+          "result": "Burn 112 s",
+          "source_url": "https://ntrs.nasa.gov/citations/20240007488"
+        }
+      ]
+    },
+    {
+      "material": "Cotton jersey, 50 cm",
+      "tests": [
+        {
+          "test_id": "saffire-v-2",
+          "oxygen_pct": 26.2,
+          "pressure_psi": 10.3,
+          "result": "Burn 200 s",
+          "source_url": "https://ntrs.nasa.gov/citations/20240007488"
+        }
+      ]
+    },
+    {
+      "material": "Two-sided PMMA, 1 cm thick, 18 cm",
+      "tests": [
+        {
+          "test_id": "saffire-vi-3",
+          "oxygen_pct": 30.3,
+          "pressure_psi": 7.9,
+          "result": "Burn 780 s",
+          "source_url": "https://ntrs.nasa.gov/citations/20240007488"
+        }
+      ]
+    },
+    {
+      "material": "One-sided PMMA, 0.5 cm thick, 18 cm",
+      "tests": [
+        {
+          "test_id": "saffire-vi-4",
+          "oxygen_pct": 28.8,
+          "pressure_psi": 8.0,
+          "result": "Burn 1200 s",
+          "source_url": "https://ntrs.nasa.gov/citations/20240007488"
+        }
+      ]
+    }
+  ],
+  "rules": null,
+  "rules_note": "NASA-STD-6001B pass/fail rule not yet read by the team. Do not display Rule cells until this is filled in."
+}
