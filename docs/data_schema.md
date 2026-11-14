@@ -10,6 +10,7 @@ One record is one test: one row of a NASA test matrix, or one run of one experim
 |---|---|---|---|---|
 | `id` | string | yes | Unique ID: investigation and test number, lowercase, hyphens | `saffire-vi-3` |
 | `investigation` | string | yes | Investigation name exactly as NASA writes it | `Saffire-VI` |
+| `investigation_id` | string | yes | Investigation ID as in the PSI Data Repository | `PSI-102` |
 | `material` | string or null | no | Sample material with size or thickness | `Two-sided PMMA, 1 cm thick, 18 cm` |
 | `oxygen_pct` | number or null | no | Oxygen concentration, in mol % | `30.3` |
 | `pressure_psi` | number or null | no | Total ambient pressure, in psi | `7.9` |

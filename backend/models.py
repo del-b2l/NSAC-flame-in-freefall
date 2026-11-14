@@ -4,6 +4,7 @@ from typing import Optional, Union
 class TestRecord(BaseModel):
     id: str
     investigation: str
+    investigation_id: Optional[str] = None
     material: Optional[str] = None
     oxygen_pct: Optional[float] = None
     pressure_psi: Optional[float] = None
