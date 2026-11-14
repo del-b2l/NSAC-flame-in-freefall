@@ -11,6 +11,12 @@
     "sample_size": null,
     "variables": "Burner diameter, coflow velocity, fuel composition",
     "related_investigations": [],
+    "earth_benefits": [
+      "Better numerical models of flame behavior can lead to more efficient combustion technologies.",
+      "Understanding soot formation helps design combustion systems with lower emissions.",
+      "Insights into flame stability and behavior can improve fire safety.",
+      "Findings can inform cleaner, more efficient engines and industrial burners."
+    ],
     "landing_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-106"
   },
   {
@@ -25,6 +31,7 @@
     "sample_size": null,
     "variables": "Reactant dilution, flow rate, pressure, flow direction",
     "related_investigations": [],
+    "earth_benefits": null,
     "landing_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-159"
   },
   {
@@ -39,6 +46,7 @@
     "sample_size": null,
     "variables": "Reactant dilution, flow rate, pressure, flow direction",
     "related_investigations": [],
+    "earth_benefits": null,
     "landing_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-10"
   },
   {
@@ -53,6 +61,7 @@
     "sample_size": null,
     "variables": null,
     "related_investigations": ["SPICE"],
+    "earth_benefits": null,
     "landing_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-60"
   },
   {
@@ -67,6 +76,7 @@
     "sample_size": null,
     "variables": null,
     "related_investigations": ["BASS", "BASS-II"],
+    "earth_benefits": null,
     "landing_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-62"
   },
   {
@@ -81,6 +91,7 @@
     "sample_size": null,
     "variables": null,
     "related_investigations": ["FLEX"],
+    "earth_benefits": null,
     "landing_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-117"
   }
 ]

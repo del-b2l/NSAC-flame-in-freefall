@@ -31,3 +31,6 @@ def load_demo_answers() -> dict:
 
 def load_investigations() -> list[dict]:
     return _read(PROCESSED / "investigations.json", default=[])
+
+def read_processed(name: str, default):
+    return _read(PROCESSED / name, default=default)
