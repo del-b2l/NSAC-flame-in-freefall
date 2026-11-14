@@ -10,3 +10,16 @@ data/raw/*
 data/raw/psi/*
 !data/raw/psi/manifest.json
 *.*-backup
+
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+cookies*
+*.log
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+playwright-report/
+test-results/
