@@ -24,6 +24,12 @@ export const TestList: React.FC<TestListProps> = ({
     <section className={styles.container} aria-labelledby="tests-heading">
       <div className={styles.sectionHeader}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <img
+            src="/assets/icons/icon-flask.png"
+            alt=""
+            className={styles.flaskIcon}
+            aria-hidden="true"
+          />
           <h2 id="tests-heading" className={styles.heading}>
             2. RANKED MICROGRAVITY INVESTIGATIONS
           </h2>
@@ -83,6 +89,12 @@ export const TestList: React.FC<TestListProps> = ({
               <div className={styles.cardTopRow}>
                 <div className={styles.titleArea}>
                   <span className={styles.rankBadge}>#{rankNumber}</span>
+                  <img
+                    src="/assets/icons/icon-flask.png"
+                    alt=""
+                    className={styles.flaskIcon}
+                    aria-hidden="true"
+                  />
                   <span className={styles.invName}>{test.investigation}</span>
                   <span className={styles.testIdBadge}>{test.id}</span>
                 </div>
@@ -107,10 +119,13 @@ export const TestList: React.FC<TestListProps> = ({
                 </span>
               </div>
 
-              {/* Condition Telemetry (Oxygen, Pressure, Airflow) */}
+              {/* Condition Telemetry (Oxygen, Pressure, Airflow) with HUD mini-bars */}
               <div className={styles.telemetryGrid}>
                 <div className={styles.conditionCol}>
-                  <span className={styles.conditionLabel}>Oxygen Conc.</span>
+                  <span className={styles.conditionLabel}>
+                    <img src="/assets/icons/icon-signal.png" alt="" className={styles.miniIcon} />
+                    Oxygen Conc.
+                  </span>
                   <span className={styles.conditionValue}>
                     {test.oxygen_pct != null ? (
                       `${test.oxygen_pct}%`
@@ -118,10 +133,16 @@ export const TestList: React.FC<TestListProps> = ({
                       <span className={styles.missingFallback}>Not tested yet</span>
                     )}
                   </span>
+                  {test.oxygen_pct != null && (
+                    <img src="/assets/ui/bar_blue.png" alt="" className={styles.conditionBarImg} />
+                  )}
                 </div>
 
                 <div className={styles.conditionCol}>
-                  <span className={styles.conditionLabel}>Ambient Pressure</span>
+                  <span className={styles.conditionLabel}>
+                    <img src="/assets/icons/icon-fuel.png" alt="" className={styles.miniIcon} />
+                    Ambient Pressure
+                  </span>
                   <span className={styles.conditionValue}>
                     {test.pressure_psi != null ? (
                       `${test.pressure_psi} psi`
@@ -129,10 +150,16 @@ export const TestList: React.FC<TestListProps> = ({
                       <span className={styles.missingFallback}>Not tested yet</span>
                     )}
                   </span>
+                  {test.pressure_psi != null && (
+                    <img src="/assets/ui/bar_red.png" alt="" className={styles.conditionBarImg} />
+                  )}
                 </div>
 
                 <div className={styles.conditionCol}>
-                  <span className={styles.conditionLabel}>Airflow Speed</span>
+                  <span className={styles.conditionLabel}>
+                    <img src="/assets/icons/icon-gear.png" alt="" className={styles.miniIcon} />
+                    Airflow Speed
+                  </span>
                   <span className={styles.conditionValue}>
                     {test.airflow ? (
                       test.airflow
@@ -143,7 +170,10 @@ export const TestList: React.FC<TestListProps> = ({
                 </div>
 
                 <div className={styles.conditionCol}>
-                  <span className={styles.conditionLabel}>Habitat Match</span>
+                  <span className={styles.conditionLabel}>
+                    <img src="/assets/icons/icon-planet.png" alt="" className={styles.miniIcon} />
+                    Habitat Match
+                  </span>
                   <span
                     className={styles.conditionValue}
                     style={{ fontSize: '12px', color: '#38bdf8' }}
@@ -155,41 +185,42 @@ export const TestList: React.FC<TestListProps> = ({
 
               {/* Result Summary */}
               <div className={styles.resultBox}>
-                <span className={styles.resultLabel}>Test Outcome:</span>
-                <span>
-                  {test.result ? (
-                    test.result
-                  ) : (
-                    <span className={styles.missingFallback}>
-                      No outcome data recorded in source document
-                    </span>
-                  )}
-                </span>
+                <img
+                  src="/assets/icons/icon-alert.png"
+                  alt=""
+                  className={styles.alertIcon}
+                  aria-hidden="true"
+                />
+                <div>
+                  <span className={styles.resultLabel}>Test Outcome:</span>
+                  <span>
+                    {test.result ? (
+                      test.result
+                    ) : (
+                      <span className={styles.missingFallback}>
+                        No outcome data recorded in source document
+                      </span>
+                    )}
+                  </span>
+                </div>
               </div>
 
               {/* Bottom Actions Row */}
               <div className={styles.bottomRow}>
                 <div className={styles.actionsGroup}>
-                  {/* AI Explain Button with GREEN indicator */}
+                  {/* AI Explain Button with GREEN indicator & pixel chip icon */}
                   <button
                     type="button"
                     className={styles.explainBtn}
                     onClick={() => onExplain(test)}
                     title="Generate AI fire dynamics comparison"
                   >
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                    <img
+                      src="/assets/icons/icon-chip.png"
+                      alt=""
+                      className={styles.chipIcon}
                       aria-hidden="true"
-                    >
-                      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                    </svg>
+                    />
                     <span>Explain</span>
                     <SourceBadge kind="ai" label="AI" size="sm" />
                   </button>
@@ -204,6 +235,12 @@ export const TestList: React.FC<TestListProps> = ({
                     className={styles.sourceLink}
                     title="View NASA primary paper / presentation"
                   >
+                    <img
+                      src="/assets/icons/icon-check.png"
+                      alt=""
+                      className={styles.miniIcon}
+                      aria-hidden="true"
+                    />
                     <span>NASA Source Citation</span>
                     <svg
                       width="12"

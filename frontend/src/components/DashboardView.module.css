@@ -14,7 +14,7 @@
   background: #090d16;
   border: 1px solid #1e293b;
   border-radius: 8px;
-  padding: 24px 28px;
+  padding: 20px 28px;
   margin-bottom: 16px;
   text-align: left;
   display: flex;
@@ -29,6 +29,20 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+.titleWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.headerPlanet {
+  width: 44px;
+  height: 44px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.6));
 }
 
 .mainTitle {
@@ -64,12 +78,21 @@
   border: none;
   border-bottom: 3px solid transparent;
   padding: 10px 18px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s ease;
   font-family: ui-monospace, monospace;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tabIcon {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
 }
 
 .tabBtn:hover {
@@ -107,6 +130,9 @@
   color: #f59e0b;
   font-family: ui-monospace, monospace;
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .findingQuote {
@@ -211,6 +237,9 @@
   color: #f8fafc;
   margin: 0;
   font-family: ui-monospace, monospace;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .categoryPill {
@@ -257,6 +286,9 @@
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .pdaBtnActive {
@@ -268,14 +300,14 @@
 /* Footer */
 .footer {
   margin-top: 48px;
-  padding-top: 18px;
+  padding-top: 20px;
   border-top: 1px solid #1e293b;
-  font-size: 13px;
+  font-size: 12px;
   color: #64748b;
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .footerLinks {
@@ -292,4 +324,10 @@
 
 .footerLink:hover {
   text-decoration: underline;
+}
+
+.assetCredits {
+  color: #475569;
+  font-size: 11px;
+  line-height: 1.5;
 }

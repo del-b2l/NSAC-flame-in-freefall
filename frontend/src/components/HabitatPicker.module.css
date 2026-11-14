@@ -39,14 +39,23 @@
   color: #d1d5db;
   border: 1.5px solid #374151;
   border-radius: 6px;
-  padding: 10px 18px;
+  padding: 8px 16px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+}
+
+.btnIcon {
+  width: 20px;
+  height: 20px;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  flex-shrink: 0;
 }
 
 .habitatBtn:hover:not(:disabled) {
@@ -60,7 +69,7 @@
   background: #0284c7;
   color: #ffffff;
   border-color: #38bdf8;
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.45);
 }
 
 .activeBtn:hover:not(:disabled) {
@@ -97,18 +106,18 @@
 }
 
 .rankingIcon {
-  width: 20px;
-  height: 20px;
-  color: #f59e0b;
+  width: 22px;
+  height: 22px;
+  image-rendering: pixelated;
   flex-shrink: 0;
 }
 
-/* Active Habitat Telemetry Display */
+/* Active Habitat Telemetry Display with Spinning Planet */
 .telemetryCard {
   background: #0b1120;
   border: 1px solid #1e293b;
   border-radius: 6px;
-  padding: 14px 18px;
+  padding: 16px 20px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -117,6 +126,21 @@
 }
 
 .telemetryLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.planetAnimation {
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.5));
+}
+
+.telemetryTextGroup {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -127,6 +151,9 @@
   font-weight: 700;
   color: #38bdf8;
   font-family: ui-monospace, monospace;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .telemetryDesc {
@@ -137,7 +164,7 @@
 .telemetryValues {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
@@ -145,10 +172,10 @@
   display: flex;
   flex-direction: column;
   background: #1e293b;
-  padding: 6px 12px;
-  border-radius: 4px;
+  padding: 8px 14px;
+  border-radius: 6px;
   border: 1px solid #334155;
-  min-width: 90px;
+  min-width: 110px;
 }
 
 .metricLabel {
@@ -160,10 +187,19 @@
 }
 
 .metricVal {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 800;
   color: #f8fafc;
   font-family: ui-monospace, monospace;
+}
+
+.metricBarImg {
+  width: 100%;
+  height: 6px;
+  margin-top: 6px;
+  image-rendering: pixelated;
+  object-fit: cover;
+  border-radius: 2px;
 }
 
 .sourceLine {
@@ -171,7 +207,7 @@
   color: #64748b;
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 6px;
+  gap: 8px;
+  margin-top: 8px;
   width: 100%;
 }

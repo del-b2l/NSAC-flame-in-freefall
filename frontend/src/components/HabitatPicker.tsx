@@ -10,6 +10,14 @@ interface HabitatPickerProps {
   isLoading?: boolean;
 }
 
+const HABITAT_ICONS: Record<string, string> = {
+  Earth: '/assets/icons/icon-planet.png',
+  'Space station': '/assets/icons/icon-rocket.png',
+  'Moon base': '/assets/icons/icon-star.png',
+  Rover: '/assets/icons/icon-battery.png',
+  Spacesuit: '/assets/icons/icon-shield.png',
+};
+
 export const HabitatPicker: React.FC<HabitatPickerProps> = ({
   habitats,
   selectedHabitat,
@@ -19,16 +27,26 @@ export const HabitatPicker: React.FC<HabitatPickerProps> = ({
   return (
     <section className={styles.container} aria-labelledby="habitat-heading">
       <div className={styles.headerRow}>
-        <h2 id="habitat-heading" className={styles.heading}>
-          1. SELECT CREW HABITAT
-        </h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <img
+            src="/assets/icons/icon-planet.png"
+            alt=""
+            className={styles.btnIcon}
+            aria-hidden="true"
+          />
+          <h2 id="habitat-heading" className={styles.heading}>
+            1. SELECT CREW HABITAT
+          </h2>
+        </div>
         <SourceBadge kind="source" label="[Data from source: Challenge Specs]" size="sm" />
       </div>
 
-      {/* 5 Habitat selection buttons */}
+      {/* 5 Habitat selection buttons with retro pixel art icons */}
       <div className={styles.buttonGroup} role="group" aria-label="Habitats">
         {habitats.map((habitat) => {
           const isSelected = habitat.name === selectedHabitat.name;
+          const iconPath = HABITAT_ICONS[habitat.name] || '/assets/icons/icon-planet.png';
+
           return (
             <button
               key={habitat.name}
@@ -38,41 +56,46 @@ export const HabitatPicker: React.FC<HabitatPickerProps> = ({
               disabled={isLoading}
               aria-pressed={isSelected}
             >
+              <img
+                src={iconPath}
+                alt=""
+                className={styles.btnIcon}
+                aria-hidden="true"
+              />
               <span>{habitat.name}</span>
             </button>
           );
         })}
       </div>
 
-      {/* Shaheer's Ranking Rule Sentence - exact required wording */}
+      {/* Shaheer's Ranking Rule Sentence - exact required wording with alert icon */}
       <div className={styles.rankingSentenceCard} role="note">
-        <svg
+        <img
+          src="/assets/icons/icon-alert.png"
+          alt="Alert icon"
           className={styles.rankingIcon}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
           aria-hidden="true"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="16" x2="12" y2="12" />
-          <line x1="12" y1="8" x2="12.01" y2="8" />
-        </svg>
+        />
         <span className={styles.rankingSentenceText}>
           Tests score higher when their oxygen and pressure are closer to this habitat.
         </span>
       </div>
 
-      {/* Selected Habitat Atmosphere Telemetry */}
+      {/* Selected Habitat Atmosphere Telemetry with Spinning Planet GIF & HUD Bars */}
       <div className={styles.telemetryCard}>
         <div className={styles.telemetryLeft}>
-          <div className={styles.telemetryHabitatName}>
-            HABITAT TARGET: {selectedHabitat.name.toUpperCase()}
-          </div>
-          <div className={styles.telemetryDesc}>
-            {selectedHabitat.description || 'Configured atmospheric parameters'}
+          <img
+            src="/assets/planets/planet_spin.gif"
+            alt="Rotating pixel planet"
+            className={styles.planetAnimation}
+          />
+          <div className={styles.telemetryTextGroup}>
+            <div className={styles.telemetryHabitatName}>
+              <span>HABITAT TARGET: {selectedHabitat.name.toUpperCase()}</span>
+            </div>
+            <div className={styles.telemetryDesc}>
+              {selectedHabitat.description || 'Configured atmospheric parameters'}
+            </div>
           </div>
         </div>
 
@@ -80,10 +103,22 @@ export const HabitatPicker: React.FC<HabitatPickerProps> = ({
           <div className={styles.metricBox}>
             <span className={styles.metricLabel}>Oxygen Conc.</span>
             <span className={styles.metricVal}>{selectedHabitat.oxygen_pct}%</span>
+            <img
+              src="/assets/ui/bar_blue.png"
+              alt=""
+              className={styles.metricBarImg}
+              aria-hidden="true"
+            />
           </div>
           <div className={styles.metricBox}>
             <span className={styles.metricLabel}>Pressure</span>
             <span className={styles.metricVal}>{selectedHabitat.pressure_psi} psi</span>
+            <img
+              src="/assets/ui/bar_gold.png"
+              alt=""
+              className={styles.metricBarImg}
+              aria-hidden="true"
+            />
           </div>
         </div>
 

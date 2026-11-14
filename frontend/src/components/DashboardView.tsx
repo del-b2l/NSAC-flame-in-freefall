@@ -35,10 +35,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   return (
     <div className={styles.mainWrapper}>
-      {/* App Header */}
+      {/* App Header with Rotating Planet Logo */}
       <header className={styles.appHeader}>
         <div className={styles.titleRow}>
-          <h1 className={styles.mainTitle}>FLAME IN FREEFALL</h1>
+          <div className={styles.titleWithIcon}>
+            <img
+              src="/assets/planets/planet_spin.gif"
+              alt="Spinning Planet Emblem"
+              className={styles.headerPlanet}
+            />
+            <h1 className={styles.mainTitle}>FLAME IN FREEFALL</h1>
+          </div>
           <SourceBadge kind="source" label="[Data from source: NASA Physical Sciences]" size="md" />
         </div>
         <p className={styles.subtitle}>
@@ -49,35 +56,39 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* Provenance Key / Accessibility Legend */}
       <Legend />
 
-      {/* Navigation Tabs */}
+      {/* Navigation Tabs with Retro Pixel Icons */}
       <nav className={styles.navTabs} aria-label="Dashboard sections">
         <button
           type="button"
           className={`${styles.tabBtn} ${activeTab === 'rank' ? styles.tabBtnActive : ''}`}
           onClick={() => setActiveTab('rank')}
         >
-          1. Habitat &amp; Tests
+          <img src="/assets/icons/icon-planet.png" alt="" className={styles.tabIcon} />
+          <span>1. Habitat &amp; Tests</span>
         </button>
         <button
           type="button"
           className={`${styles.tabBtn} ${activeTab === 'investigations' ? styles.tabBtnActive : ''}`}
           onClick={() => setActiveTab('investigations')}
         >
-          2. Investigations
+          <img src="/assets/icons/icon-flask.png" alt="" className={styles.tabIcon} />
+          <span>2. Investigations</span>
         </button>
         <button
           type="button"
           className={`${styles.tabBtn} ${activeTab === 'pda' ? styles.tabBtnActive : ''}`}
           onClick={() => setActiveTab('pda')}
         >
-          3. Prevent · Detect · Put out
+          <img src="/assets/icons/icon-shield.png" alt="" className={styles.tabIcon} />
+          <span>3. Prevent · Detect · Put out</span>
         </button>
         <button
           type="button"
           className={`${styles.tabBtn} ${activeTab === 'safety' ? styles.tabBtnActive : ''}`}
           onClick={() => setActiveTab('safety')}
         >
-          4. Key Finding &amp; Safety Table
+          <img src="/assets/icons/icon-alert.png" alt="" className={styles.tabIcon} />
+          <span>4. Key Finding &amp; Safety Table</span>
         </button>
       </nav>
 
@@ -115,7 +126,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             {MOCK_INVESTIGATIONS.map((inv) => (
               <div key={inv.name} className={styles.invCard}>
                 <div className={styles.invCardHeader}>
-                  <h3 className={styles.invTitle}>{inv.name}</h3>
+                  <h3 className={styles.invTitle}>
+                    <img src="/assets/icons/icon-flask.png" alt="" style={{ width: '16px', height: '16px', imageRendering: 'pixelated' }} />
+                    {inv.name}
+                  </h3>
                   <span className={styles.categoryPill}>{inv.cat}</span>
                 </div>
                 <div className={styles.invDetail}>
@@ -159,7 +173,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 className={`${styles.pdaBtn} ${pdaCategory === cat ? styles.pdaBtnActive : ''}`}
                 onClick={() => setPdaCategory(cat)}
               >
-                {cat}
+                <img
+                  src={
+                    cat === 'Prevent'
+                      ? '/assets/icons/icon-shield.png'
+                      : cat === 'Detect'
+                      ? '/assets/icons/icon-alert.png'
+                      : '/assets/icons/icon-check.png'
+                  }
+                  alt=""
+                  style={{ width: '16px', height: '16px', imageRendering: 'pixelated' }}
+                />
+                <span>{cat}</span>
               </button>
             ))}
           </div>
@@ -168,7 +193,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             {pdaFiltered.map((inv) => (
               <div key={inv.name} className={styles.invCard}>
                 <div className={styles.invCardHeader}>
-                  <h3 className={styles.invTitle}>{inv.name}</h3>
+                  <h3 className={styles.invTitle}>
+                    <img src="/assets/icons/icon-flask.png" alt="" style={{ width: '16px', height: '16px', imageRendering: 'pixelated' }} />
+                    {inv.name}
+                  </h3>
                   <SourceBadge kind="source" size="sm" />
                 </div>
                 <p style={{ margin: 0, fontSize: '14px', color: '#cbd5e1' }}>
@@ -189,7 +217,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           {/* Saffire-VI 981-Second Key Finding Card */}
           <div className={styles.findingCard}>
             <div className={styles.findingHeader}>
-              <h2 className={styles.findingTitle}>CRITICAL KEY FINDING: SAFFIRE-VI</h2>
+              <h2 className={styles.findingTitle}>
+                <img src="/assets/icons/icon-alert.png" alt="" style={{ width: '22px', height: '22px', imageRendering: 'pixelated' }} />
+                CRITICAL KEY FINDING: SAFFIRE-VI
+              </h2>
               <SourceBadge kind="source" label="[Data from source: ICES 2024]" size="sm" />
             </div>
             <blockquote className={styles.findingQuote}>
@@ -305,7 +336,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         onClose={() => setExplainTarget(null)}
       />
 
-      {/* Global Footer */}
+      {/* Global Footer with Source Links and Asset Pack Licensing Attribution */}
       <footer className={styles.footer}>
         <div className={styles.footerLinks}>
           <a
@@ -337,6 +368,20 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
         <div>
           Every displayed metric originates from verified NASA microgravity flight investigations. Preliminary data explicitly labeled.
+        </div>
+        <div className={styles.assetCredits}>
+          Visual Assets &amp; Retro UI credits:{' '}
+          <a href="https://heyheythere.itch.io/pixel-ui-scifi-free" target="_blank" rel="noopener noreferrer" style={{ color: '#64748b' }}>
+            Pixel UI Sci-Fi Free by heyheythere (CC BY 4.0)
+          </a>{' '}
+          ·{' '}
+          <a href="https://helianthus-games.itch.io/animated-pixel-art-planets" target="_blank" rel="noopener noreferrer" style={{ color: '#64748b' }}>
+            Spinning Planets by Helianthus Games
+          </a>{' '}
+          ·{' '}
+          <a href="https://aquumgifts.itch.io/cozy-space-icons-ui" target="_blank" rel="noopener noreferrer" style={{ color: '#64748b' }}>
+            Cozy Space Icons &amp; UI by Spaceyyy / Aquum Gifts
+          </a>
         </div>
       </footer>
     </div>

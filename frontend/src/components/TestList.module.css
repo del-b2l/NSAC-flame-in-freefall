@@ -43,6 +43,7 @@
   padding: 18px 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
   transition: transform 0.15s ease, border-color 0.15s ease;
+  position: relative;
 }
 
 .card:hover {
@@ -74,6 +75,13 @@
   font-weight: 800;
   padding: 3px 8px;
   border-radius: 4px;
+}
+
+.flaskIcon {
+  width: 18px;
+  height: 18px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .invName {
@@ -133,6 +141,15 @@
   color: #94a3b8;
   font-weight: 600;
   letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.miniIcon {
+  width: 12px;
+  height: 12px;
+  image-rendering: pixelated;
 }
 
 .conditionValue {
@@ -141,6 +158,15 @@
   color: #f3f4f6;
   font-family: ui-monospace, monospace;
   margin-top: 2px;
+}
+
+.conditionBarImg {
+  width: 100%;
+  max-width: 120px;
+  height: 4px;
+  margin-top: 4px;
+  image-rendering: pixelated;
+  border-radius: 2px;
 }
 
 .missingFallback {
@@ -159,6 +185,17 @@
   font-size: 13px;
   line-height: 1.5;
   color: #e2e8f0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.alertIcon {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .resultLabel {
@@ -195,7 +232,7 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   transition: all 0.2s ease;
   font-family: ui-monospace, monospace;
 }
@@ -203,7 +240,13 @@
 .explainBtn:hover {
   background: #10b981;
   color: #064e3b;
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
+}
+
+.chipIcon {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
 }
 
 .sourceLink {
@@ -212,7 +255,7 @@
   font-size: 13px;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   font-weight: 600;
   transition: color 0.15s;
 }
