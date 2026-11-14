@@ -1,9 +1,37 @@
 import json
 from pathlib import Path
-from backend.models import TestRecord
 
-DATA_FILE = Path(__file__).resolve().parent.parent / "data" / "sample" / "sample_tests.json"
+from backend.models import Habitat, TestRecord
+
+ROOT = Path(__file__).resolve().parent.parent
+PROCESSED = ROOT / "data" / "processed"
+SAMPLE = ROOT / "data" / "sample"
+
+def _read(*paths, default):
+    for p in paths:
+        if p.exists() and p.stat().st_size > 0:
+            return json.loads(p.read_text(encoding="utf-8"))
+    return default
 
 def load_tests() -> list[TestRecord]:
-    with open(DATA_FILE, encoding="utf-8") as f:
-        return [TestRecord(**item) for item in json.load(f)]
+    data = _read(PROCESSED / "tests.json", SAMPLE / "sample_tests.json", default=[])
+    return [TestRecord(**t) for t in data]
+
+def load_habitats() -> list[Habitat]:
+    return [Habitat(**h) for h in _read(PROCESSED / "habitats.json", default=[])]
+
+def load_safety() -> dict:
+    return _read(PROCESSED / "safety.json", default={"materials": [], "rules": None})
+
+def load_insights() -> dict:
+    return _read(PROCESSED / "insights.json",
+                 default={"key_finding": None, "gaps": [], "earth_use": []})
+
+def load_demo_answers() -> dict:
+    return _read(PROCESSED / "demo_answers.json", default={})
+
+def load_investigations() -> list[dict]:
+    return _read(PROCESSED / "investigations.json", default=[])
+
+def read_processed(name: str, default):
+    return _read(PROCESSED / name, default=default)

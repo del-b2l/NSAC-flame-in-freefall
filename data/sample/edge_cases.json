@@ -1,0 +1,39 @@
+[
+ {
+  "id": "sample-oxygen-only",
+  "investigation": "Saffire-II (sample row, not shipped)",
+  "material": "Silicone, 0.27 mm, 29 x 5 cm",
+  "oxygen_pct": 21.5,
+  "pressure_psi": null,
+  "airflow": "20 cm/s concurrent",
+  "result": "Burn time: Insignificant",
+  "conditions": {
+   "Sample Number": "2-1",
+   "Ignition Power (W)": "80 W",
+   "Ignition Time (s)": "9.2 s",
+   "1-g Burn Length": "Complete",
+   "1-g Spread Rate": "Acceleratory",
+   "Note": "Edge case for tests. The source table has no pressure column, so pressure stays null and the record ranks last."
+  },
+  "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-99"
+ },
+ {
+  "id": "sample-no-values",
+  "investigation": "SLICE (sample row, not shipped)",
+  "material": null,
+  "oxygen_pct": null,
+  "pressure_psi": null,
+  "airflow": "36.39 cm/s",
+  "result": null,
+  "conditions": {
+   "Fuel": "Ethylene",
+   "Nozzle (mm)": 1.6002,
+   "Fuel Rate (sccm)": 103.8,
+   "Air Rate (cm/s)": 36.39,
+   "GMT ignition": "14:37:08",
+   "GMT Flame Off": "14:48:03",
+   "Note": "Edge case for tests. Neither oxygen nor pressure is published for this test, so both stay null and no distance is computed."
+  },
+  "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-106"
+ }
+]
