@@ -18,6 +18,15 @@ from backend.models import Habitat, TestRecord
 # distance term. See docs/ranking_rule.md, "Airflow".
 BAND_WIDTH = 0.5
 
+# Inputs have at most two decimals, so real distances differ by at least 0.01;
+# six decimals removes float noise (~1e-13) without merging different distances.
+DISTANCE_DECIMALS = 6
+
+
+def _round_distance(distance: float) -> float:
+    """Round away float noise so equal distances compare as equal."""
+    return round(distance, DISTANCE_DECIMALS)
+
 
 def _distance(test: TestRecord, habitat: Habitat) -> float | None:
     """Oxygen gap plus pressure gap, in their own units (mol % and psi).
@@ -27,8 +36,9 @@ def _distance(test: TestRecord, habitat: Habitat) -> float | None:
     """
     if test.oxygen_pct is None or test.pressure_psi is None:
         return None
-    return abs(test.oxygen_pct - habitat.oxygen_pct) + abs(
-        test.pressure_psi - habitat.pressure_psi
+    return _round_distance(
+        abs(test.oxygen_pct - habitat.oxygen_pct)
+        + abs(test.pressure_psi - habitat.pressure_psi)
     )
 
 
@@ -112,6 +122,9 @@ def rank_tests_by_tier(tests: list[TestRecord], habitat: Habitat) -> list[dict]:
                 if distance is None
                 else distance + pressure_difference
             )
+
+        if distance is not None:
+            distance = _round_distance(distance)
 
         results.append({
             "test": test,

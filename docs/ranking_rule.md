@@ -51,13 +51,15 @@ Moon base habitat (oxygen 30%, pressure 10.2 psi) and the Saffire VI-3 test
 - Distance: **2.6**
 
 That 2.6 is the closest any Saffire fire test gets to a Moon base, and it is
-15th of the 994 records. The 14 ahead of it are FLEX droplet tests that NASA
-ran at 30% oxygen and 10.2–10.5 psi, which is almost exactly Moon-base air, so
-they score 0.13 to 0.46. That is the ranking doing its job, not an error.
+15th of the 986 records. Eight of the 14 ahead of it are FLEX droplet tests
+that NASA ran at 30% oxygen and 10.33–10.46 psi, which is almost exactly
+Moon-base air, so they score 0.13 to 0.26. The other six are CFI-G
+inverse-flame tests at 30% oxygen and 8.0 psi, which score 2.2. That is the
+ranking doing its job, not an error.
 
 ### The order this produces today
 
-Real records from `data/processed/tests.json` (994 records), nearest first:
+Real records from `data/processed/tests.json` (986 records), nearest first:
 
 | Habitat | First five |
 |---|---|
@@ -67,8 +69,9 @@ Real records from `data/processed/tests.json` (994 records), nearest first:
 | Rover | same as Moon base |
 | Spacesuit | `acme-fd-inverse-21349a1` (16.96) → `acme-fd-inverse-21349b1` (16.99) → `acme-fd-inverse-22024g1` (18.09) → `acme-fd-inverse-22024h1` (18.11) → `acme-fd-inverse-22035j1` (18.12) |
 
-The Earth row is a five-way tie at distance 0.00: CFI ran at 21% oxygen and
-1 atm, so `id` decides the order. Many FLEX tests share the same ambient
+The Earth row is a tie at distance 0.00 (33 records from CFI, CFI-G and FLEX
+score exactly 0.00): these five CFI tests ran at 21% oxygen and 1 atm, so `id`
+decides the order. Many FLEX tests share the same ambient
 conditions, which is why ties are common and why the last tie-break has to be
 stable.
 
@@ -100,23 +103,24 @@ shown to the user as written and never parsed into a number.
 
 ## Where the data comes from
 
-`data/processed/tests.json` holds 994 records built by
+`data/processed/tests.json` holds 986 records built by
 `data/scripts/build_tests.py`:
 
 | Source | Records | Oxygen and pressure from |
 |---|---|---|
 | CFI-G, normal flames (PSI-159) | 179 | `XO2 before test` (mole fraction), `approx p` (bar) |
 | CFI-G, inverse flames (PSI-159) | 154 | `XO2`, `approx p` (bar) |
-| CFI (PSI-39) | 87 | `Oxygen` (mole fraction), `Pressure` (`1 atm`) |
+| CFI (PSI-39) | 79 | `Oxygen` (mole fraction), `Pressure` (`1 atm`) |
 | ACME / Flame Design, normal (PSI-10) | 187 | `XO2 (init)`, `pmean (atm)` |
 | ACME / Flame Design, inverse (PSI-10) | 109 | `XO2`, `pmean (atm)` |
 | FLEX (PSI-69) | 273 | `O initial ambient composition`, `Ambient pressure; mmHg` |
 | Saffire IV–VI | 5 | hand-transcribed from the NTRS paper |
 
 Every row in the PSI tables is one test. A row is only shipped when it has a
-numeric oxygen value, a numeric pressure and a source link; 893 rows were
-dropped because the table leaves one of those blank (mostly inverse-flame rows
-with no oxygen). The counts and reasons are printed by
+numeric oxygen value, a numeric pressure and a source link; 901 rows were
+dropped. 892 of them leave oxygen or pressure blank (mostly inverse-flame rows
+with no oxygen), one FLEX row has a pressure of 0.0, and 8 CFI rows are exact
+duplicates of another row in the same table. The counts and reasons are printed by
 `python data/scripts/build_tests.py --dry-run`, and `data/raw/README.md` logs
 the files and their hashes.
 
@@ -133,7 +137,10 @@ the files and their hashes.
 
 After distance, the remaining tie-breaks are: recorded airflow, then `id`.
 Two identical requests therefore always return the same order, which keeps the
-screen stable and the tests repeatable.
+screen stable and the tests repeatable. The distance is rounded to six decimals
+before it is compared, so two tests that really are the same distance away (for
+example Saffire VI-2 and VI-4 from a Moon base, both 3.4) count as tied and
+`id` decides, instead of tiny floating-point leftovers.
 
 ## Text shown on the dashboard
 
@@ -156,7 +163,7 @@ to mention airflow.
 > pressure is shown at the bottom rather than guessed, and airflow only breaks
 > near-ties because NASA never published airflow for these habitats.
 >
-> Everything is traceable: 994 records, each one linked to the NASA table it
+> Everything is traceable: 986 records, each one linked to the NASA table it
 > came from, built by a script that refuses to emit a row without a source.
 
 ## Two-minute explanation (Sunday)
@@ -177,11 +184,12 @@ to mention airflow.
 ## How this was checked
 
 ```
-python -m pytest backend/tests data/tests -q   # 66 passed
+python -m pytest backend/tests data/tests -q   # 125 passed
 python data/scripts/build_tests.py --check     # data/processed/tests.json is up to date
 ```
 
-That is 66 tests: the ranking rule with synthetic records, the unit converters
-with inline values, and the shipped dataset (unique ids, a source link on every
-record, oxygen and pressure inside plausible ranges, five records pinned to
-hand-checked rows). Last run: Saturday 14 November 2026.
+That is 125 tests (35 in `backend/tests`, 90 in `data/tests`): the ranking rule
+with synthetic records, the unit converters with inline values, and the shipped
+dataset (unique ids, a source link on every record, oxygen and pressure inside
+plausible ranges, five records pinned to hand-checked rows, plus checks against
+the raw rows and the source list). Last run: Saturday 14 November 2026.

@@ -14,7 +14,7 @@ import pytest
 from backend.data_loader import load_habitats, load_tests
 from backend.models import Habitat
 from backend.models import TestRecord as Record  # alias: pytest collects Test*
-from backend.ranking import _distance, rank_tests
+from backend.ranking import _distance, rank_tests, rank_tests_by_tier
 
 MOON_BASE = Habitat(name="Moon base", oxygen_pct=30, pressure_psi=10.2)
 
@@ -75,6 +75,23 @@ def test_distance_breaks_ties_before_the_id():
     closer = make("zzz", 30.3, 10.2)  # 0.3, sorts first despite the id
     further = make("aaa", 30.4, 10.2)  # 0.4
     assert ids(rank_tests([further, closer], MOON_BASE)) == ["zzz", "aaa"]
+
+
+def test_exact_tie_is_broken_by_id_not_float_noise():
+    """1.0 + 2.4 and 1.2 + 2.2 are both 3.4, but plain float addition makes the
+    second one slightly smaller. The id has to decide, as the rule says."""
+    first = make("a-tie", 31.0, 7.8)
+    second = make("b-tie", 28.8, 8.0)
+    assert _distance(first, MOON_BASE) == _distance(second, MOON_BASE)
+    assert ids(rank_tests([second, first], MOON_BASE)) == ["a-tie", "b-tie"]
+
+
+def test_exact_tie_is_broken_by_id_in_the_tier_ranking():
+    first = make("a-tie", 31.0, 7.8)
+    second = make("b-tie", 28.8, 8.0)
+    results = rank_tests_by_tier([second, first], MOON_BASE)
+    assert results[0]["distance"] == results[1]["distance"]
+    assert [r["test"].id for r in results] == ["a-tie", "b-tie"]
 
 
 # --- airflow ---------------------------------------------------------------
