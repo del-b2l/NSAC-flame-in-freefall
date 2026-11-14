@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from backend.data_loader import load_tests, load_habitats, load_safety
+from backend.data_loader import load_tests, load_habitats, load_safety, load_insights
 from backend.models import RankRequest
 from backend.ranking import rank_tests
 
@@ -12,6 +12,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+from backend.explain import router as explain_router
+app.include_router(explain_router)
 
 @app.get("/health")
 def health():
@@ -35,6 +38,10 @@ def rank(req: RankRequest):
 @app.get("/safety")
 def safety():
     return load_safety()
+
+@app.get("/insights")
+def insights():
+    return load_insights()
 
 # After Shaheer's PR is merged:
 # from backend.investigations import router as investigations_router

@@ -1,0 +1,42 @@
+{
+  "key_finding": {
+    "title": "981 seconds",
+    "text": "In Saffire VI, smoke was readily detected at 981 seconds, after most of the hazardous gas release had already happened.",
+    "source_label": "Saffire VI presentation, ICES 2024",
+    "source_url": "https://ntrs.nasa.gov/citations/20240007488",
+    "status": "preliminary"
+  },
+  "gaps": [
+    {
+      "text": "There is currently no partial-gravity combustion data in PSI. Microgravity and normal-gravity results could bound what happens at intermediate gravity levels.",
+      "source_label": "Flame in Freefall challenge page",
+      "source_url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"
+    }
+  ],
+  "earth_use": [
+    {
+      "title": "Fine-water-mist extinguishers",
+      "text": "Developed for use on the ISS, with practical applications on Earth.",
+      "source_label": "Flame in Freefall challenge page",
+      "source_url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"
+    },
+    {
+      "title": "Smoke detection",
+      "text": "A 1970s shuttle smoke detector that tells smoke from dust, giving fewer nuisance alarms. It has industrial uses, such as in mining.",
+      "source_label": "NASA Spinoff: Fire Detector",
+      "source_url": "https://spinoff.nasa.gov/node/9407"
+    },
+    {
+      "title": "Firefighter air tanks",
+      "text": "Spacesuit technology adapted in the 1970s to improve firefighters' air tanks and breathing gear.",
+      "source_label": "NASA Spinoff: Fireman's Air Tanks",
+      "source_url": "https://spinoff.nasa.gov/node/9582"
+    },
+    {
+      "title": "Firefighter clothing",
+      "text": "Spacesuit technology applied in the 1980s to improve firefighter protective clothing.",
+      "source_label": "NASA Spinoff: New Technology for the Fire Attire",
+      "source_url": "https://spinoff.nasa.gov/node/9918"
+    }
+  ]
+}

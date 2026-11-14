@@ -21,3 +21,10 @@ def load_habitats() -> list[Habitat]:
 
 def load_safety() -> dict:
     return _read(PROCESSED / "safety.json", default={"materials": [], "rules": None})
+
+def load_insights() -> dict:
+    return _read(PROCESSED / "insights.json",
+                 default={"key_finding": None, "gaps": [], "earth_use": []})
+
+def load_demo_answers() -> dict:
+    return _read(PROCESSED / "demo_answers.json", default={})
