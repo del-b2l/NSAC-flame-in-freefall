@@ -70,7 +70,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     const settleEasing = 'cubic-bezier(0.22, 1, 0.36, 1)';
     const revealStart = 350 / 6000;
     const revealEnd = 1500 / 6000;
-    const travelStart = 0.675;
+    const travelStart = 3000 / 6000;
 
     const groupAnimation = titleGroup.animate(
       [
