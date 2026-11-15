@@ -6,11 +6,14 @@
 export interface TestRecord {
   id: string;
   investigation: string;
+  investigation_id?: string | null;
   material: string | null;
   oxygen_pct: number | null;
+  oxygen_context?: 'chamber_air' | 'burner_gas' | 'unknown';
   pressure_psi: number | null;
   airflow: string | null;
   result: string | null;
+  conditions?: Record<string, string>;
   source_url: string | null;
 }
 
