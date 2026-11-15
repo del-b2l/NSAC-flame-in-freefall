@@ -1,0 +1,499 @@
+import React, { useLayoutEffect, useRef, useState } from 'react';
+import styles from './DashboardView.module.css';
+import type { Habitat, TestRecord } from '../types';
+import HabitatPicker from './HabitatPicker';
+import TestList from './TestList';
+import Legend from './Legend';
+import ExplainModal from './ExplainModal';
+import SourceBadge from './SourceBadge';
+import { MOCK_INVESTIGATIONS } from '../data/mockData';
+
+interface DashboardViewProps {
+  habitats: Habitat[];
+  selectedHabitat: Habitat;
+  onSelectHabitat: (habitat: Habitat) => void;
+  tests: TestRecord[];
+  isLoading: boolean;
+  error: string | null;
+  onRetry: () => void;
+}
+
+export const DashboardView: React.FC<DashboardViewProps> = ({
+  habitats,
+  selectedHabitat,
+  onSelectHabitat,
+  tests,
+  isLoading,
+  error,
+  onRetry,
+}) => {
+  const [activeTab, setActiveTab] = useState<'rank' | 'investigations' | 'pda' | 'safety'>('rank');
+  const [pdaCategory, setPdaCategory] = useState<'Prevent' | 'Detect' | 'Put out'>('Prevent');
+  const [explainTarget, setExplainTarget] = useState<TestRecord | null>(null);
+  const [introComplete, setIntroComplete] = useState(false);
+  const titleGroupRef = useRef<HTMLDivElement>(null);
+  const planetRef = useRef<HTMLImageElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+
+  const pdaFiltered = MOCK_INVESTIGATIONS.filter((inv) => inv.cat === pdaCategory);
+
+  useLayoutEffect(() => {
+    if (introComplete) {
+      return;
+    }
+
+    const titleGroup = titleGroupRef.current;
+    const planet = planetRef.current;
+    const title = titleRef.current;
+
+    if (!titleGroup || !planet || !title) {
+      setIntroComplete(true);
+      return;
+    }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setIntroComplete(true);
+      return;
+    }
+
+    const previousOverflow = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+
+    const planetBounds = planet.getBoundingClientRect();
+    const groupBounds = titleGroup.getBoundingClientRect();
+    const planetSize = Math.min(240, Math.max(150, window.innerWidth * 0.28));
+    const titleSeparation = (planetSize - planetBounds.width) / 2;
+    const centerX = window.innerWidth / 2 - (groupBounds.left + groupBounds.width / 2);
+    const centerY = window.innerHeight / 2 - (groupBounds.top + groupBounds.height / 2);
+    const planetCentered = `translate3d(${window.innerWidth / 2 - (planetBounds.left + planetBounds.width / 2)}px, ${window.innerHeight / 2 - (planetBounds.top + planetBounds.height / 2)}px, 0)`;
+    const compositionCentered = `translate3d(${centerX - titleSeparation}px, ${centerY}px, 0)`;
+    const settleEasing = 'cubic-bezier(0.22, 1, 0.36, 1)';
+    const revealStart = 350 / 6000;
+    const revealEnd = 1500 / 6000;
+    const travelStart = 3000 / 6000;
+
+    const groupAnimation = titleGroup.animate(
+      [
+        { transform: planetCentered, offset: 0, easing: 'linear' },
+        {
+          transform: planetCentered,
+          offset: revealStart,
+          easing: settleEasing,
+        },
+        { transform: compositionCentered, offset: revealEnd, easing: 'linear' },
+        { transform: compositionCentered, offset: travelStart, easing: settleEasing },
+        { transform: 'translate3d(0, 0, 0)', offset: 1 },
+      ],
+      { duration: 6000, fill: 'both' }
+    );
+    const planetAnimation = planet.animate(
+      [
+        { transform: `scale(${planetSize / 44})`, offset: 0 },
+        { transform: `scale(${planetSize / 44})`, offset: travelStart, easing: settleEasing },
+        { transform: 'scale(1)', offset: 1 },
+      ],
+      { duration: 6000, fill: 'both' }
+    );
+    const titleAnimation = title.animate(
+      [
+        {
+          clipPath: 'inset(0 100% 0 0)',
+          opacity: 0,
+          transform: 'translateX(-22px) scaleX(0.88)',
+          offset: 0,
+        },
+        {
+          clipPath: 'inset(0 100% 0 0)',
+          opacity: 0,
+          transform: 'translateX(-22px) scaleX(0.88)',
+          offset: revealStart,
+          easing: settleEasing,
+        },
+        {
+          clipPath: 'inset(0 0 0 0)',
+          opacity: 1,
+          transform: `translateX(${titleSeparation}px) scaleX(1)`,
+          offset: revealEnd,
+        },
+        {
+          clipPath: 'inset(0 0 0 0)',
+          opacity: 1,
+          transform: `translateX(${titleSeparation}px) scaleX(1)`,
+          offset: travelStart,
+          easing: settleEasing,
+        },
+        { clipPath: 'inset(0 0 0 0)', opacity: 1, transform: 'translateX(0) scaleX(1)', offset: 1 },
+      ],
+      {
+        duration: 6000,
+        fill: 'both',
+      }
+    );
+
+    groupAnimation.onfinish = () => setIntroComplete(true);
+
+    return () => {
+      groupAnimation.cancel();
+      planetAnimation.cancel();
+      titleAnimation.cancel();
+      document.documentElement.style.overflow = previousOverflow;
+    };
+  }, [introComplete]);
+
+  return (
+    <div className={`${styles.mainWrapper} ${introComplete ? '' : styles.opening}`}>
+      {/* App Header with Rotating Planet Logo */}
+      <header className={styles.appHeader}>
+        <div className={styles.titleRow}>
+          <div className={styles.titleWithIcon} ref={titleGroupRef}>
+            <img
+              src={selectedHabitat.planetGif || '/assets/planets/earth_spin.gif'}
+              alt="Spinning Planet Emblem"
+              className={styles.headerPlanet}
+              ref={planetRef}
+            />
+            <h1 className={styles.mainTitle} ref={titleRef}>FLAME IN FREEFALL</h1>
+          </div>
+          <SourceBadge kind="source" label="[Data from source: NASA Physical Sciences]" size="md" />
+        </div>
+        <p className={styles.subtitle}>
+          Microgravity combustion flight analysis &amp; crew habitat fire safety dashboard. Evaluating flame propagation, oxygen boundary thresholds, and toxicity buildup across space environments.
+        </p>
+      </header>
+
+      {/* Provenance Key / Accessibility Legend */}
+      <Legend />
+
+      {/* Navigation Tabs with Retro Pixel Icons */}
+      <nav className={styles.navTabs} aria-label="Dashboard sections">
+        <button
+          type="button"
+          className={`${styles.tabBtn} ${activeTab === 'rank' ? styles.tabBtnActive : ''}`}
+          onClick={() => setActiveTab('rank')}
+        >
+          <img src="/assets/icons/icon-planet.png" alt="" className={styles.tabIcon} />
+          <span>1. Habitat &amp; Tests</span>
+        </button>
+        <button
+          type="button"
+          className={`${styles.tabBtn} ${activeTab === 'investigations' ? styles.tabBtnActive : ''}`}
+          onClick={() => setActiveTab('investigations')}
+        >
+          <img src="/assets/icons/icon-flask.png" alt="" className={styles.tabIcon} />
+          <span>2. Investigations</span>
+        </button>
+        <button
+          type="button"
+          className={`${styles.tabBtn} ${activeTab === 'pda' ? styles.tabBtnActive : ''}`}
+          onClick={() => setActiveTab('pda')}
+        >
+          <img src="/assets/icons/icon-shield.png" alt="" className={styles.tabIcon} />
+          <span>3. Prevent · Detect · Put out</span>
+        </button>
+        <button
+          type="button"
+          className={`${styles.tabBtn} ${activeTab === 'safety' ? styles.tabBtnActive : ''}`}
+          onClick={() => setActiveTab('safety')}
+        >
+          <img src="/assets/icons/icon-alert.png" alt="" className={styles.tabIcon} />
+          <span>4. Key Finding &amp; Safety Table</span>
+        </button>
+      </nav>
+
+      {/* TAB 1: HABITAT & RANKED TESTS */}
+      {activeTab === 'rank' && (
+        <main>
+          <HabitatPicker
+            habitats={habitats}
+            selectedHabitat={selectedHabitat}
+            onSelectHabitat={onSelectHabitat}
+            isLoading={isLoading}
+          />
+
+          <TestList
+            tests={tests}
+            selectedHabitat={selectedHabitat}
+            isLoading={isLoading}
+            error={error}
+            onRetry={onRetry}
+            onExplain={(t) => setExplainTarget(t)}
+          />
+        </main>
+      )}
+
+      {/* TAB 2: INVESTIGATIONS */}
+      {activeTab === 'investigations' && (
+        <section aria-labelledby="inv-heading">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <h2 id="inv-heading" style={{ margin: 0, fontSize: '20px', fontFamily: 'monospace' }}>
+              NASA MICROGRAVITY INVESTIGATIONS CATALOGUE
+            </h2>
+            <SourceBadge kind="source" size="sm" />
+          </div>
+          <div className={styles.invGrid}>
+            {MOCK_INVESTIGATIONS.map((inv) => (
+              <div key={inv.name} className={styles.invCard}>
+                <div className={styles.invCardHeader}>
+                  <h3 className={styles.invTitle}>
+                    <img src="/assets/icons/icon-flask.png" alt="" style={{ width: '16px', height: '16px', imageRendering: 'pixelated' }} />
+                    {inv.name}
+                  </h3>
+                  <span className={styles.categoryPill}>{inv.cat}</span>
+                </div>
+                <div className={styles.invDetail}>
+                  <strong>Objective:</strong> {inv.objective}
+                </div>
+                <div className={styles.invDetail}>
+                  <strong>Fuels:</strong> {inv.fuels}
+                </div>
+                <div className={styles.invDetail}>
+                  <strong>Hardware:</strong> {inv.hw}
+                </div>
+                <div className={styles.invDetail}>
+                  <strong>Sensors:</strong> {inv.sensors}
+                </div>
+                <div className={styles.invDetail}>
+                  <strong>Key Variables:</strong> {inv.vars}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* TAB 3: PREVENT · DETECT · PUT OUT */}
+      {activeTab === 'pda' && (
+        <section className={styles.pdaContainer} aria-labelledby="pda-heading">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <h2 id="pda-heading" style={{ margin: 0, fontSize: '20px', fontFamily: 'monospace' }}>
+              NASA FIRE SAFETY ARCHITECTURE
+            </h2>
+            <SourceBadge kind="source" size="sm" />
+          </div>
+          <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '16px' }}>
+            NASA groups human spaceflight fire safety into three sequential phases. Select a phase below:
+          </p>
+          <div className={styles.pdaBtnRow}>
+            {(['Prevent', 'Detect', 'Put out'] as const).map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                className={`${styles.pdaBtn} ${pdaCategory === cat ? styles.pdaBtnActive : ''}`}
+                onClick={() => setPdaCategory(cat)}
+              >
+                <img
+                  src={
+                    cat === 'Prevent'
+                      ? '/assets/icons/icon-shield.png'
+                      : cat === 'Detect'
+                      ? '/assets/icons/icon-alert.png'
+                      : '/assets/icons/icon-check.png'
+                  }
+                  alt=""
+                  style={{ width: '16px', height: '16px', imageRendering: 'pixelated' }}
+                />
+                <span>{cat}</span>
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {pdaFiltered.map((inv) => (
+              <div key={inv.name} className={styles.invCard}>
+                <div className={styles.invCardHeader}>
+                  <h3 className={styles.invTitle}>
+                    <img src="/assets/icons/icon-flask.png" alt="" style={{ width: '16px', height: '16px', imageRendering: 'pixelated' }} />
+                    {inv.name}
+                  </h3>
+                  <SourceBadge kind="source" size="sm" />
+                </div>
+                <p style={{ margin: 0, fontSize: '14px', color: '#cbd5e1' }}>
+                  <strong>Focus:</strong> {inv.objective}
+                </p>
+                <p style={{ margin: 0, fontSize: '13px', color: '#94a3b8' }}>
+                  Hardware: {inv.hw} | Fuels: {inv.fuels}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* TAB 4: KEY FINDING & SAFETY TABLE */}
+      {activeTab === 'safety' && (
+        <section aria-labelledby="safety-heading">
+          {/* Saffire-VI 981-Second Key Finding Card */}
+          <div className={styles.findingCard}>
+            <div className={styles.findingHeader}>
+              <h2 className={styles.findingTitle}>
+                <img src="/assets/icons/icon-alert.png" alt="" style={{ width: '22px', height: '22px', imageRendering: 'pixelated' }} />
+                CRITICAL KEY FINDING: SAFFIRE-VI
+              </h2>
+              <SourceBadge kind="source" label="[Data from source: ICES 2024]" size="sm" />
+            </div>
+            <blockquote className={styles.findingQuote}>
+              &ldquo;In Saffire VI, the smoke was readily detected at 981 seconds, after most of the hazardous gas release had already happened.&rdquo;
+            </blockquote>
+            <div className={styles.findingSource}>
+              <span>Source:</span>
+              <a
+                href="https://ntrs.nasa.gov/citations/20240007488"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#38bdf8', textDecoration: 'underline' }}
+              >
+                Saffire VI Presentation, ICES 2024 (NTRS 20240007488)
+              </a>
+            </div>
+          </div>
+
+          {/* Safety Table: What NASA Has Tested */}
+          <div className={styles.safetySection}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 id="safety-heading" style={{ margin: 0, fontSize: '18px', fontFamily: 'monospace' }}>
+                HONEST SAFETY TABLE: WHAT NASA HAS TESTED
+              </h3>
+              <SourceBadge kind="source" size="sm" />
+            </div>
+            <p style={{ color: '#94a3b8', fontSize: '13px', margin: '8px 0 16px 0' }}>
+              Each cell displays verified NASA microgravity test boundaries or official standards. We never invent arbitrary pass/fail thresholds.
+            </p>
+
+            <div className={styles.tableContainer}>
+              <table className={styles.dataTable}>
+                <thead>
+                  <tr>
+                    <th>Sample Material</th>
+                    <th>Tested Conditions (O₂, Pressure)</th>
+                    <th>Earth Air (21%, 14.7 psi)</th>
+                    <th>Moon Base Air (30%, 10.2 psi)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <strong>Two-sided PMMA, 1 cm thick, 18 cm</strong>
+                      <br />
+                      <small style={{ color: '#94a3b8' }}>Saffire VI-3</small>
+                    </td>
+                    <td>
+                      <SourceBadge kind="source" size="sm" /> 30.3% O₂, 7.9 psi
+                    </td>
+                    <td className={styles.notTested}>Not tested yet in microgravity</td>
+                    <td>
+                      <span className={styles.testedPill}>Tested</span>
+                      <br />
+                      Tested at 30.3% O₂ and 7.9 psi (close to Moon base 30%, but at reduced pressure)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>SIBAL cloth, 50 cm</strong>
+                      <br />
+                      <small style={{ color: '#94a3b8' }}>Saffire IV-1, VI-2</small>
+                    </td>
+                    <td>
+                      <SourceBadge kind="source" size="sm" /> 22.0%, 14.5 psi (IV-1)
+                      <br />
+                      31.0%, 7.9 psi (VI-2)
+                    </td>
+                    <td>
+                      <span className={styles.testedPill}>Tested</span>
+                      <br />
+                      Tested at 22.0% O₂, 14.5 psi (close to Earth sea level)
+                    </td>
+                    <td>
+                      <span className={styles.testedPill}>Tested</span>
+                      <br />
+                      Tested at 31.0% O₂, 7.9 psi (matches elevated oxygen range)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Cotton jersey, 50 cm</strong>
+                      <br />
+                      <small style={{ color: '#94a3b8' }}>Saffire V-2</small>
+                    </td>
+                    <td>
+                      <SourceBadge kind="source" size="sm" /> 26.2% O₂, 10.3 psi
+                    </td>
+                    <td className={styles.notTested}>Not tested yet</td>
+                    <td>
+                      <span className={styles.testedPill}>Tested</span>
+                      <br />
+                      Tested at 10.3 psi (closely bounds Moon base 10.2 psi atmosphere)
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p style={{ fontSize: '12px', color: '#64748b', marginTop: '12px' }}>
+              Standard References: NASA-STD-6001B Flammability Test Standard · NASA Physical Sciences Informatics (PSI)
+            </p>
+          </div>
+        </section>
+      )}
+
+      {/* AI Explanation Modal */}
+      <ExplainModal
+        key={explainTarget ? explainTarget.id : 'none'}
+        test={explainTarget}
+        habitat={selectedHabitat}
+        isOpen={explainTarget !== null}
+        onClose={() => setExplainTarget(null)}
+      />
+
+      {/* Global Footer with Source Links and Asset Pack Licensing Attribution */}
+      <footer className={styles.footer}>
+        <div className={styles.footerLinks}>
+          <a
+            href="https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.footerLink}
+          >
+            NASA Space Apps Challenge: Flame in Freefall
+          </a>
+          <span>·</span>
+          <a
+            href="https://psi.nasa.gov/physci/repo/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.footerLink}
+          >
+            NASA PSI Database
+          </a>
+          <span>·</span>
+          <a
+            href="https://ntrs.nasa.gov/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.footerLink}
+          >
+            NASA Technical Reports Server (NTRS)
+          </a>
+        </div>
+        <div>
+          Every displayed metric originates from verified NASA microgravity flight investigations. Preliminary data explicitly labeled.
+        </div>
+        <div className={styles.assetCredits}>
+          Visual Assets &amp; Retro UI credits:{' '}
+          <a href="https://heyheythere.itch.io/pixel-ui-scifi-free" target="_blank" rel="noopener noreferrer" style={{ color: '#64748b' }}>
+            Pixel UI Sci-Fi Free by heyheythere (CC BY 4.0)
+          </a>{' '}
+          ·{' '}
+          <a href="https://helianthus-games.itch.io/animated-pixel-art-planets" target="_blank" rel="noopener noreferrer" style={{ color: '#64748b' }}>
+            Spinning Planets by Helianthus Games
+          </a>{' '}
+          ·{' '}
+          <a href="https://aquumgifts.itch.io/cozy-space-icons-ui" target="_blank" rel="noopener noreferrer" style={{ color: '#64748b' }}>
+            Cozy Space Icons &amp; UI by Spaceyyy / Aquum Gifts
+          </a>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default DashboardView;

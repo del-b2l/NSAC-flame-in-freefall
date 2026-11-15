@@ -1,0 +1,248 @@
+.container {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  font-family: system-ui, -apple-system, sans-serif;
+  text-align: left;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.heading {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f3f4f6;
+  margin: 0;
+  letter-spacing: 0.04em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.habitatBtn {
+  background: #1f2937;
+  color: #d1d5db;
+  border: 1.5px solid #374151;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btnPlanetThumb {
+  width: 22px;
+  height: 22px;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.habitatBtn:hover:not(:disabled) {
+  background: #374151;
+  color: #fff;
+  border-color: #4b5563;
+  transform: translateY(-2px);
+}
+
+.activeBtn {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
+}
+
+.activeBtn:hover:not(:disabled) {
+  background: #0369a1;
+  border-color: #7dd3fc;
+}
+
+.habitatBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Shaheer's Ranking Sentence - must stand out clearly for projector */
+.rankingSentenceCard {
+  background: #1e1b18;
+  border-left: 4px solid #f59e0b;
+  border-top: 1px solid #451a03;
+  border-right: 1px solid #451a03;
+  border-bottom: 1px solid #451a03;
+  border-radius: 4px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rankingSentenceText {
+  color: #fed7aa;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+.rankingIcon {
+  width: 22px;
+  height: 22px;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+/* Active Habitat Telemetry Display with Dynamic Spinning Planet */
+.telemetryCard {
+  background: #0b1120;
+  border: 1.5px solid #1e293b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+.telemetryLeft {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.planetSpinWrapper {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.planetAnimation {
+  width: 52px;
+  height: 52px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  border-radius: 50%;
+  transition: filter 0.3s ease;
+}
+
+/* Specific glows per planet */
+.glowEarth {
+  filter: drop-shadow(0 0 12px rgba(37, 99, 235, 0.75)) drop-shadow(0 0 4px rgba(34, 197, 94, 0.6));
+}
+
+.glowMoon {
+  filter: drop-shadow(0 0 12px rgba(226, 232, 240, 0.65)) drop-shadow(0 0 4px rgba(148, 163, 184, 0.5));
+}
+
+.glowStation {
+  filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.8)) drop-shadow(0 0 5px rgba(2, 132, 199, 0.7));
+}
+
+.glowRover {
+  filter: drop-shadow(0 0 14px rgba(249, 115, 22, 0.85)) drop-shadow(0 0 4px rgba(194, 65, 12, 0.6));
+}
+
+.glowSpacesuit {
+  filter: drop-shadow(0 0 14px rgba(250, 204, 21, 0.85)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.6));
+}
+
+.telemetryTextGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.telemetryHabitatName {
+  font-size: 18px;
+  font-weight: 800;
+  color: #f8fafc;
+  font-family: ui-monospace, monospace;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.03em;
+}
+
+.telemetryDesc {
+  font-size: 13px;
+  color: #94a3b8;
+  max-width: 450px;
+}
+
+.telemetryValues {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.metricBox {
+  display: flex;
+  flex-direction: column;
+  background: #1e293b;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  min-width: 120px;
+}
+
+.metricLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #94a3b8;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.metricVal {
+  font-size: 20px;
+  font-weight: 800;
+  color: #f8fafc;
+  font-family: ui-monospace, monospace;
+}
+
+.metricBarImg {
+  width: 100%;
+  height: 6px;
+  margin-top: 6px;
+  image-rendering: pixelated;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.sourceLine {
+  font-size: 12px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  width: 100%;
+}
