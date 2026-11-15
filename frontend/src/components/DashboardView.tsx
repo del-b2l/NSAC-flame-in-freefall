@@ -6,7 +6,6 @@ import TestList from './TestList';
 import Legend from './Legend';
 import ExplainModal from './ExplainModal';
 import SourceBadge from './SourceBadge';
-import { MOCK_INVESTIGATIONS } from '../data/mockData';
 import { useDashboardData } from '../api/useDashboardData';
 
 interface DashboardViewProps {
@@ -73,8 +72,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const planetRef = useRef<HTMLImageElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
 
-  const pdaFiltered = MOCK_INVESTIGATIONS.filter((inv) => inv.cat === pdaCategory);
   const catalogue = investigations ? sortInvestigations(investigations) : null;
+  const pdaGroups: Record<'Prevent' | 'Detect' | 'Put out', Investigation[]> = {
+    Prevent: [],
+    Detect: [],
+    'Put out': [],
+  };
+  for (const inv of catalogue ?? []) {
+    const label = categoryLabel(inv.category);
+    if (label === 'Prevent' || label === 'Detect' || label === 'Put out') {
+      pdaGroups[label].push(inv);
+    }
+  }
+  const pdaFiltered = pdaGroups[pdaCategory];
 
   useLayoutEffect(() => {
     if (introComplete) {
@@ -343,49 +353,72 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '16px' }}>
             NASA groups human spaceflight fire safety into three sequential phases. Select a phase below:
           </p>
-          <div className={styles.pdaBtnRow}>
-            {(['Prevent', 'Detect', 'Put out'] as const).map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                className={`${styles.pdaBtn} ${pdaCategory === cat ? styles.pdaBtnActive : ''}`}
-                onClick={() => setPdaCategory(cat)}
-              >
-                <img
-                  src={
-                    cat === 'Prevent'
-                      ? '/assets/icons/icon-shield.png'
-                      : cat === 'Detect'
-                      ? '/assets/icons/icon-alert.png'
-                      : '/assets/icons/icon-check.png'
-                  }
-                  alt=""
-                  style={{ width: '16px', height: '16px', imageRendering: 'pixelated' }}
-                />
-                <span>{cat}</span>
-              </button>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {pdaFiltered.map((inv) => (
-              <div key={inv.name} className={styles.invCard}>
-                <div className={styles.invCardHeader}>
-                  <h3 className={styles.invTitle}>
-                    <img src="/assets/icons/icon-flask.png" alt="" style={{ width: '16px', height: '16px', imageRendering: 'pixelated' }} />
-                    {inv.name}
-                  </h3>
-                  <SourceBadge kind="source" size="sm" />
-                </div>
-                <p style={{ margin: 0, fontSize: '14px', color: '#cbd5e1' }}>
-                  <strong>Focus:</strong> {inv.objective}
-                </p>
-                <p style={{ margin: 0, fontSize: '13px', color: '#94a3b8' }}>
-                  Hardware: {inv.hw} | Fuels: {inv.fuels}
-                </p>
+          {!catalogue ? (
+            <p style={{ color: '#94a3b8', fontSize: '14px' }}>
+              {dataLoading
+                ? 'Loading investigations…'
+                : 'Investigation data unavailable. See the error above.'}
+            </p>
+          ) : (
+            <>
+              <div className={styles.pdaBtnRow}>
+                {(['Prevent', 'Detect', 'Put out'] as const).map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    className={`${styles.pdaBtn} ${pdaCategory === cat ? styles.pdaBtnActive : ''}`}
+                    onClick={() => setPdaCategory(cat)}
+                  >
+                    <img
+                      src={
+                        cat === 'Prevent'
+                          ? '/assets/icons/icon-shield.png'
+                          : cat === 'Detect'
+                          ? '/assets/icons/icon-alert.png'
+                          : '/assets/icons/icon-check.png'
+                      }
+                      alt=""
+                      style={{ width: '16px', height: '16px', imageRendering: 'pixelated' }}
+                    />
+                    <span>
+                      {cat} ({pdaGroups[cat].length})
+                    </span>
+                  </button>
+                ))}
               </div>
-            ))}
-          </div>
+
+              {pdaFiltered.length === 0 ? (
+                <p style={{ color: '#94a3b8', fontSize: '14px' }}>
+                  No investigations in the data are tagged &ldquo;{pdaCategory}&rdquo;.
+                </p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {pdaFiltered.map((inv) => (
+                    <div key={inv.id} className={styles.invCard}>
+                      <div className={styles.invCardHeader}>
+                        <div>
+                          <h3 className={styles.invTitle}>
+                            <img src="/assets/icons/icon-flask.png" alt="" style={{ width: '16px', height: '16px', imageRendering: 'pixelated' }} />
+                            {inv.acronym?.trim() || inv.name}
+                          </h3>
+                          {inv.acronym?.trim() && (
+                            <p className={styles.invFullName}>{inv.name}</p>
+                          )}
+                        </div>
+                        <SourceBadge kind="source" size="sm" />
+                      </div>
+                      <p style={{ margin: 0, fontSize: '14px', color: '#cbd5e1' }}>
+                        <strong>Focus:</strong> {recorded(inv.objective)}
+                      </p>
+                      <p style={{ margin: 0, fontSize: '13px', color: '#94a3b8' }}>
+                        Hardware: {recorded(inv.hardware_family ?? inv.hardware)} | Fuels: {recorded(inv.fuels)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </section>
       )}
 
