@@ -7,6 +7,7 @@ import Legend from './Legend';
 import ExplainModal from './ExplainModal';
 import SourceBadge from './SourceBadge';
 import { MOCK_INVESTIGATIONS } from '../data/mockData';
+import { useDashboardData } from '../api/useDashboardData';
 
 interface DashboardViewProps {
   habitats: Habitat[];
@@ -31,6 +32,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [pdaCategory, setPdaCategory] = useState<'Prevent' | 'Detect' | 'Put out'>('Prevent');
   const [explainTarget, setExplainTarget] = useState<TestRecord | null>(null);
   const [introComplete, setIntroComplete] = useState(false);
+  const { error: dataError } = useDashboardData();
   const titleGroupRef = useRef<HTMLDivElement>(null);
   const planetRef = useRef<HTMLImageElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -199,6 +201,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <span>4. Key Finding &amp; Safety Table</span>
         </button>
       </nav>
+
+      {dataError && (
+        <p className={styles.dataError} role="alert">
+          {dataError}
+        </p>
+      )}
 
       {/* TAB 1: HABITAT & RANKED TESTS */}
       {activeTab === 'rank' && (
