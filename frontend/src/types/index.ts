@@ -28,17 +28,6 @@ export interface Habitat {
 
 export type SourceBadgeKind = 'source' | 'ai';
 
-export interface InvestigationInfo {
-  name: string;
-  cat: 'Prevent' | 'Detect' | 'Put out' | 'Related';
-  fuels: string;
-  hw: string;
-  objective: string;
-  sensors: string;
-  sample: string;
-  vars: string;
-}
-
 /**
  * An investigation as served by GET /investigations.
  *
