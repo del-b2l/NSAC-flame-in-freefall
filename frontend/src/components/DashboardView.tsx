@@ -67,7 +67,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [pdaCategory, setPdaCategory] = useState<'Prevent' | 'Detect' | 'Put out'>('Prevent');
   const [explainTarget, setExplainTarget] = useState<TestRecord | null>(null);
   const [introComplete, setIntroComplete] = useState(false);
-  const { investigations, loading: dataLoading, error: dataError } = useDashboardData();
+  const { investigations, safety, insights, loading: dataLoading, error: dataError } = useDashboardData();
   const titleGroupRef = useRef<HTMLDivElement>(null);
   const planetRef = useRef<HTMLImageElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -425,29 +425,44 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* TAB 4: KEY FINDING & SAFETY TABLE */}
       {activeTab === 'safety' && (
         <section aria-labelledby="safety-heading">
-          {/* Saffire-VI 981-Second Key Finding Card */}
+          {/* Key finding, served by GET /insights */}
           <div className={styles.findingCard}>
             <div className={styles.findingHeader}>
               <h2 className={styles.findingTitle}>
                 <img src="/assets/icons/icon-alert.png" alt="" style={{ width: '22px', height: '22px', imageRendering: 'pixelated' }} />
-                CRITICAL KEY FINDING: SAFFIRE-VI
+                CRITICAL KEY FINDING{insights ? `: ${insights.key_finding.title.toUpperCase()}` : ''}
               </h2>
-              <SourceBadge kind="source" label="[Data from source: ICES 2024]" size="sm" />
+              <SourceBadge kind="source" size="sm" />
             </div>
-            <blockquote className={styles.findingQuote}>
-              &ldquo;In Saffire VI, the smoke was readily detected at 981 seconds, after most of the hazardous gas release had already happened.&rdquo;
-            </blockquote>
-            <div className={styles.findingSource}>
-              <span>Source:</span>
-              <a
-                href="https://ntrs.nasa.gov/citations/20240007488"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: '#38bdf8', textDecoration: 'underline' }}
-              >
-                Saffire VI Presentation, ICES 2024 (NTRS 20240007488)
-              </a>
-            </div>
+            {insights ? (
+              <>
+                <blockquote className={styles.findingQuote}>
+                  &ldquo;{insights.key_finding.text}&rdquo;
+                </blockquote>
+                <div className={styles.findingSource}>
+                  <span>Source:</span>
+                  <a
+                    href={insights.key_finding.source_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: '#38bdf8', textDecoration: 'underline' }}
+                  >
+                    {insights.key_finding.source_label}
+                  </a>
+                  {insights.key_finding.status && (
+                    <span style={{ color: '#94a3b8' }}>
+                      ({insights.key_finding.status})
+                    </span>
+                  )}
+                </div>
+              </>
+            ) : (
+              <p style={{ color: '#94a3b8', fontSize: '14px', margin: 0 }}>
+                {dataLoading
+                  ? 'Loading key finding…'
+                  : 'Key finding unavailable. See the error above.'}
+              </p>
+            )}
           </div>
 
           {/* Safety Table: What NASA Has Tested */}
@@ -459,81 +474,76 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <SourceBadge kind="source" size="sm" />
             </div>
             <p style={{ color: '#94a3b8', fontSize: '13px', margin: '8px 0 16px 0' }}>
-              Each cell displays verified NASA microgravity test boundaries or official standards. We never invent arbitrary pass/fail thresholds.
+              Each cell shows the closest NASA microgravity test for that habitat, linked to its source. We never invent arbitrary pass/fail thresholds.
             </p>
 
-            <div className={styles.tableContainer}>
-              <table className={styles.dataTable}>
-                <thead>
-                  <tr>
-                    <th>Sample Material</th>
-                    <th>Tested Conditions (O₂, Pressure)</th>
-                    <th>Earth Air (21%, 14.7 psi)</th>
-                    <th>Moon Base Air (30%, 10.2 psi)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <strong>Two-sided PMMA, 1 cm thick, 18 cm</strong>
-                      <br />
-                      <small style={{ color: '#94a3b8' }}>Saffire VI-3</small>
-                    </td>
-                    <td>
-                      <SourceBadge kind="source" size="sm" /> 30.3% O₂, 7.9 psi
-                    </td>
-                    <td className={styles.notTested}>Not tested yet in microgravity</td>
-                    <td>
-                      <span className={styles.testedPill}>Tested</span>
-                      <br />
-                      Tested at 30.3% O₂ and 7.9 psi (close to Moon base 30%, but at reduced pressure)
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>SIBAL cloth, 50 cm</strong>
-                      <br />
-                      <small style={{ color: '#94a3b8' }}>Saffire IV-1, VI-2</small>
-                    </td>
-                    <td>
-                      <SourceBadge kind="source" size="sm" /> 22.0%, 14.5 psi (IV-1)
-                      <br />
-                      31.0%, 7.9 psi (VI-2)
-                    </td>
-                    <td>
-                      <span className={styles.testedPill}>Tested</span>
-                      <br />
-                      Tested at 22.0% O₂, 14.5 psi (close to Earth sea level)
-                    </td>
-                    <td>
-                      <span className={styles.testedPill}>Tested</span>
-                      <br />
-                      Tested at 31.0% O₂, 7.9 psi (matches elevated oxygen range)
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>Cotton jersey, 50 cm</strong>
-                      <br />
-                      <small style={{ color: '#94a3b8' }}>Saffire V-2</small>
-                    </td>
-                    <td>
-                      <SourceBadge kind="source" size="sm" /> 26.2% O₂, 10.3 psi
-                    </td>
-                    <td className={styles.notTested}>Not tested yet</td>
-                    <td>
-                      <span className={styles.testedPill}>Tested</span>
-                      <br />
-                      Tested at 10.3 psi (closely bounds Moon base 10.2 psi atmosphere)
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            {safety ? (
+              <>
+                <div className={styles.tableContainer}>
+                  <table className={styles.dataTable}>
+                    <thead>
+                      <tr>
+                        <th>Sample Material</th>
+                        {safety.habitats.map((habitat) => (
+                          <th key={habitat}>{habitat}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {safety.rows.map((row) => (
+                        <tr key={row.material}>
+                          <td>
+                            <strong>{row.material}</strong>
+                          </td>
+                          {row.cells.map((cell) => (
+                            <td key={`${row.material}-${cell.habitat}`}>
+                              {cell.state === 'rule' ? (
+                                <span>{cell.rule ?? 'Rule listed'}</span>
+                              ) : cell.state === 'tested' && cell.nearest_test ? (
+                                <>
+                                  <span className={styles.testedPill}>Tested</span>
+                                  <br />
+                                  {cell.nearest_test.source_url ? (
+                                    <a
+                                      href={cell.nearest_test.source_url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      style={{ color: '#38bdf8', textDecoration: 'underline' }}
+                                    >
+                                      {cell.nearest_test.test_id}
+                                    </a>
+                                  ) : (
+                                    cell.nearest_test.test_id
+                                  )}
+                                  {': '}
+                                  {cell.nearest_test.oxygen_pct ?? '—'}% O₂,{' '}
+                                  {cell.nearest_test.pressure_psi ?? '—'} psi
+                                </>
+                              ) : (
+                                <span className={styles.notTested}>Not tested</span>
+                              )}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
 
-            <p style={{ fontSize: '12px', color: '#64748b', marginTop: '12px' }}>
-              Standard References: NASA-STD-6001B Flammability Test Standard · NASA Physical Sciences Informatics (PSI)
-            </p>
+                <p style={{ fontSize: '12px', color: '#64748b', marginTop: '12px' }}>
+                  {safety.rules_read
+                    ? 'Cells marked “Rule” cite the transcribed NASA-STD-6001B requirement instead of a nearest test.'
+                    : 'No pass/fail rule is applied: NASA-STD-6001B rules have not been transcribed for these materials, so every cell shows the nearest NASA test only.'}
+                  {' '}Standard references: NASA-STD-6001B Flammability Test Standard · NASA Physical Sciences Informatics (PSI).
+                </p>
+              </>
+            ) : (
+              <p style={{ color: '#94a3b8', fontSize: '14px' }}>
+                {dataLoading
+                  ? 'Loading safety table…'
+                  : 'Safety table unavailable. See the error above.'}
+              </p>
+            )}
           </div>
         </section>
       )}
