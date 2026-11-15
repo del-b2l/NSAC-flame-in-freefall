@@ -5,7 +5,13 @@
  * the chosen habitat and renders the order it gets back, untouched.
  */
 
-import type { Habitat, TestRecord } from '../types';
+import type {
+  Habitat,
+  Insights,
+  Investigation,
+  SafetyTable,
+  TestRecord,
+} from '../types';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
@@ -53,6 +59,65 @@ export async function getRankedTests(habitat: Habitat): Promise<TestRecord[]> {
     throw new Error('/rank did not return a list of test records');
   }
   return data as TestRecord[];
+}
+
+/**
+ * Fetch the investigation catalogue from GET /investigations.
+ */
+export async function getInvestigations(): Promise<Investigation[]> {
+  const res = await fetch(`${BASE_URL}/investigations`, {
+    method: 'GET',
+    headers: { Accept: 'application/json' },
+  });
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} from /investigations`);
+  }
+  const data = await res.json();
+  if (!Array.isArray(data)) {
+    throw new Error('/investigations did not return a list');
+  }
+  return data as Investigation[];
+}
+
+/**
+ * Fetch the nearest-test table from GET /safety/table.
+ */
+export async function getSafetyTable(): Promise<SafetyTable> {
+  const res = await fetch(`${BASE_URL}/safety/table`, {
+    method: 'GET',
+    headers: { Accept: 'application/json' },
+  });
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} from /safety/table`);
+  }
+  const data = await res.json();
+  if (
+    !data ||
+    typeof data !== 'object' ||
+    !Array.isArray(data.rows) ||
+    !Array.isArray(data.habitats)
+  ) {
+    throw new Error('/safety/table did not return a table');
+  }
+  return data as SafetyTable;
+}
+
+/**
+ * Fetch the headline insight from GET /insights.
+ */
+export async function getInsights(): Promise<Insights> {
+  const res = await fetch(`${BASE_URL}/insights`, {
+    method: 'GET',
+    headers: { Accept: 'application/json' },
+  });
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} from /insights`);
+  }
+  const data = await res.json();
+  if (!data || typeof data !== 'object' || !data.key_finding) {
+    throw new Error('/insights did not return a key finding');
+  }
+  return data as Insights;
 }
 
 /**

@@ -305,6 +305,13 @@
   gap: 8px;
 }
 
+.invFullName {
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #94a3b8;
+}
+
 .categoryPill {
   background: #1e293b;
   color: #38bdf8;
@@ -393,4 +400,17 @@
   color: #475569;
   font-size: 11px;
   line-height: 1.5;
+}
+
+/* Live-data fetch failure */
+.dataError {
+  background: #201314;
+  border: 1.5px solid #dc2626;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  color: #fca5a5;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
