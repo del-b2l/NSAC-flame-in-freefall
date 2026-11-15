@@ -7,6 +7,7 @@ import Legend from './Legend';
 import ExplainModal from './ExplainModal';
 import SourceBadge from './SourceBadge';
 import { useDashboardData } from '../api/useDashboardData';
+import { AskPanel, BriefPanel, EarthUsePanel, HardwarePanel } from './ExtraPanels';
 
 interface DashboardViewProps {
   habitats: Habitat[];
@@ -265,6 +266,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             isLoading={isLoading}
           />
 
+          <BriefPanel habitat={selectedHabitat} />
+          <AskPanel habitat={selectedHabitat} />
+
           <TestList
             tests={tests}
             selectedHabitat={selectedHabitat}
@@ -338,6 +342,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               ))}
             </div>
           )}
+          <HardwarePanel />
         </section>
       )}
 
@@ -501,7 +506,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                 <span>{cell.rule ?? 'Rule listed'}</span>
                               ) : cell.state === 'tested' && cell.nearest_test ? (
                                 <>
-                                  <span className={styles.testedPill}>Tested</span>
+                                  <span className={styles.testedPill}>Nearest test</span>
                                   <br />
                                   {cell.nearest_test.source_url ? (
                                     <a
@@ -518,6 +523,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                   {': '}
                                   {cell.nearest_test.oxygen_pct ?? '—'}% O₂,{' '}
                                   {cell.nearest_test.pressure_psi ?? '—'} psi
+                                  <br />
+                                  <small style={{ color: '#94a3b8' }}>
+                                    Oxygen gap {cell.oxygen_gap ?? '—'} points, pressure gap{' '}
+                                    {cell.pressure_gap ?? '—'} psi
+                                  </small>
                                 </>
                               ) : (
                                 <span className={styles.notTested}>Not tested</span>
@@ -545,6 +555,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </p>
             )}
           </div>
+          <EarthUsePanel />
         </section>
       )}
 
@@ -552,7 +563,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       <ExplainModal
         key={explainTarget ? explainTarget.id : 'none'}
         test={explainTarget}
-        habitat={selectedHabitat}
         isOpen={explainTarget !== null}
         onClose={() => setExplainTarget(null)}
       />

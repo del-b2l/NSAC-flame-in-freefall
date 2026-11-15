@@ -21,8 +21,10 @@ export interface Habitat {
   name: string;
   oxygen_pct: number;
   pressure_psi: number;
-  source?: string;
-  description?: string;
+  /** "stated", "expected" or "assumed", as served by GET /habitats. */
+  status?: string;
+  source_url?: string | null;
+  note?: string;
   planetGif?: string;
 }
 
@@ -111,4 +113,76 @@ export interface Insights {
   key_finding: KeyFinding;
   gaps: InsightCard[];
   control_need: ControlNeed;
+}
+
+/** GET /hardware: investigations grouped by hardware family. */
+export type HardwareGroups = Record<string, { id: string; name: string }[]>;
+
+export interface EarthSpinoff {
+  title: string;
+  text: string;
+  source_label: string;
+  source_url: string | null;
+}
+
+export interface EarthResearchBenefit {
+  investigation_id: string;
+  investigation_name: string;
+  benefits: string[];
+  source_url: string | null;
+}
+
+/** GET /earth-use. */
+export interface EarthUse {
+  spinoffs: EarthSpinoff[];
+  from_research: EarthResearchBenefit[];
+}
+
+export interface BriefTest {
+  id: string;
+  investigation: string;
+  material: string | null;
+  oxygen_pct: number | null;
+  pressure_psi: number | null;
+  distance: number | null;
+  label: string;
+  source_url: string | null;
+}
+
+/** GET /brief?habitat=. */
+export interface Brief {
+  habitat: { name: string; oxygen_pct: number; pressure_psi: number; status: string };
+  top_tests: BriefTest[];
+  key_finding: KeyFinding | null;
+  gap: InsightCard | null;
+  control_need: ControlNeed | null;
+}
+
+/** POST /explain/{test_id}. */
+export interface Explanation {
+  test_id: string;
+  source_url: string | null;
+  text: string;
+  /** true when an AI model wrote the text, false when it is NASA's own text. */
+  generated: boolean;
+  /** "gemini" (live), "cache" (saved AI answer) or "record" (NASA's own text). */
+  origin: string;
+}
+
+export interface SourceCard {
+  id: string;
+  kind: string;
+  label: string;
+  source_url: string | null;
+}
+
+/** POST /qa. */
+export interface QaAnswer {
+  question: string;
+  answer: string | null;
+  verified: boolean;
+  origin: string;
+  citations: SourceCard[];
+  sources_considered: SourceCard[];
+  note?: string;
 }

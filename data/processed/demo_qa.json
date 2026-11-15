@@ -1,0 +1,18 @@
+[
+  {
+    "question": "When was smoke detected in Saffire VI?",
+    "answer": "In Saffire VI, smoke was readily detected at 981 seconds [key-finding]."
+  },
+  {
+    "question": "What does the FLEX experiment aim to do?",
+    "answer": "The Flame Extinguishment Experiment aims to map the flammability limits of liquid fuels in microgravity, measure the effectiveness of various gaseous fire suppressants, and develop reliable predictive models for combustion limits under reduced gravity conditions [PSI-69]."
+  },
+  {
+    "question": "What hardware was used for Burning and Suppression of Solids II (BASS-II)?",
+    "answer": "BASS-II used the Microgravity Science Glovebox (MSG) hardware [PSI-25]."
+  },
+  {
+    "question": "How does this research help fire safety on Earth?",
+    "answer": "Studying fire in small, sealed environments like the Cygnus cargo supply vehicle helps fire prevention and safety efforts inside mines, submarines, or airplanes [PSI-100, PSI-98]. The research can also improve combustion modeling by advancing our understanding of coupled flow, chemical, and thermal processes, which helps better fire safety standards on Earth [PSI-62]. Additionally, insights from these studies can advance fire safety in reduced-gravity and confined environments like high-altitude aircraft or submarines, and inform the design of cleaner, high-efficiency engines [PSI-69, PSI-39]."
+  }
+]

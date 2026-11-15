@@ -6,9 +6,14 @@
  */
 
 import type {
+  Brief,
+  EarthUse,
+  Explanation,
   Habitat,
+  HardwareGroups,
   Insights,
   Investigation,
+  QaAnswer,
   SafetyTable,
   TestRecord,
 } from '../types';
@@ -121,31 +126,76 @@ export async function getInsights(): Promise<Insights> {
 }
 
 /**
- * AI Explanation placeholder function.
- * Marked as AI-generated; will connect to Gemini / RAG endpoint in future.
+ * Send one request and return its JSON body, or throw with the status.
  */
-export async function fetchAiExplanation(
-  test: TestRecord,
-  habitat: Habitat
-): Promise<{ explanation: string; generatedAt: string }> {
-  // Simulating async call for AI generation
-  await new Promise((resolve) => setTimeout(resolve, 350));
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    ...init,
+    headers: { Accept: 'application/json', ...(init?.headers ?? {}) },
+  });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '');
+    throw new Error(`HTTP ${res.status} from ${path}${detail ? `: ${detail.slice(0, 200)}` : ''}`);
+  }
+  return (await res.json()) as T;
+}
 
-  const oxyDiff = test.oxygen_pct != null
-    ? (test.oxygen_pct - habitat.oxygen_pct).toFixed(1)
-    : 'unknown';
-  const psiDiff = test.pressure_psi != null
-    ? (test.pressure_psi - habitat.pressure_psi).toFixed(1)
-    : 'unknown';
+/**
+ * Fetch the five habitats, with their status and source, from GET /habitats.
+ */
+export async function getHabitats(): Promise<Habitat[]> {
+  const data = await request<Habitat[]>('/habitats');
+  if (!Array.isArray(data)) {
+    throw new Error('/habitats did not return a list');
+  }
+  return data;
+}
 
-  return {
-    explanation:
-      `[AI Synthesis] In this microgravity run (${test.investigation}, ${test.id}), ` +
-      `the sample (${test.material ?? 'unspecified material'}) burned under ${test.oxygen_pct ?? 'N/A'}% O2 ` +
-      `and ${test.pressure_psi ?? 'N/A'} psi. Compared to ${habitat.name} (${habitat.oxygen_pct}% O2, ` +
-      `${habitat.pressure_psi} psi), the test environment had an oxygen delta of ${oxyDiff}% and pressure ` +
-      `delta of ${psiDiff} psi. Primary flame propagation and thermal release indicate that in low-flow ` +
-      `conditions (${test.airflow ?? 'quiescent'}), toxic gaseous buildup (CO/CO2) precedes visible thermal flareups.`,
-    generatedAt: new Date().toISOString(),
-  };
+/**
+ * Fetch investigations grouped by hardware family from GET /hardware.
+ */
+export function getHardware(): Promise<HardwareGroups> {
+  return request<HardwareGroups>('/hardware');
+}
+
+/**
+ * Fetch the Earth-use notes from GET /earth-use.
+ */
+export function getEarthUse(): Promise<EarthUse> {
+  return request<EarthUse>('/earth-use');
+}
+
+/**
+ * Fetch the one-page brief for a habitat from GET /brief.
+ */
+export function getBrief(habitatName: string): Promise<Brief> {
+  return request<Brief>(`/brief?habitat=${encodeURIComponent(habitatName)}`);
+}
+
+/**
+ * Ask the backend for a short summary of one test via POST /explain/{test_id}.
+ *
+ * The backend checks every number against the record and falls back to NASA's
+ * own text, so nothing is written or reworded in the browser.
+ */
+export function explainTest(testId: string): Promise<Explanation> {
+  return request<Explanation>(`/explain/${encodeURIComponent(testId)}`, { method: 'POST' });
+}
+
+/**
+ * Ask a free-text question via POST /qa. The answer cites the records it used.
+ */
+export function askQuestion(question: string, habitatName?: string): Promise<QaAnswer> {
+  return request<QaAnswer>('/qa', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question, habitat: habitatName ?? null }),
+  });
+}
+
+/**
+ * Fetch the example questions that have saved answers from GET /qa/examples.
+ */
+export function getQaExamples(): Promise<string[]> {
+  return request<string[]>('/qa/examples');
 }

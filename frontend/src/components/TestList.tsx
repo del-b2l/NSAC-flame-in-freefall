@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './TestList.module.css';
 import type { Habitat, TestRecord } from '../types';
 import SourceBadge from './SourceBadge';
@@ -12,6 +12,8 @@ interface TestListProps {
   onExplain: (test: TestRecord) => void;
 }
 
+const PAGE_SIZE = 25;
+
 export const TestList: React.FC<TestListProps> = ({
   tests,
   selectedHabitat,
@@ -20,6 +22,12 @@ export const TestList: React.FC<TestListProps> = ({
   onRetry,
   onExplain,
 }) => {
+  // Drawing every record at once freezes the page, so the list grows in steps.
+  // The count is kept per ranked list, so a new habitat starts from the top.
+  const [shown, setShown] = useState<{ list: TestRecord[]; count: number }>({ list: tests, count: PAGE_SIZE });
+  const visibleCount = shown.list === tests ? shown.count : PAGE_SIZE;
+  const visibleTests = tests.slice(0, visibleCount);
+
   return (
     <section className={styles.container} aria-labelledby="tests-heading">
       <div className={styles.sectionHeader}>
@@ -76,7 +84,7 @@ export const TestList: React.FC<TestListProps> = ({
 
       {/* Test records list */}
       {!isLoading &&
-        tests.map((test, index) => {
+        visibleTests.map((test, index) => {
           const rankNumber = index + 1;
           const isTwoSidedPmma = test.material?.toLowerCase().includes('two-sided pmma');
 
@@ -265,6 +273,23 @@ export const TestList: React.FC<TestListProps> = ({
             </article>
           );
         })}
+
+      {!isLoading && tests.length > 0 && (
+        <div style={{ textAlign: 'center', margin: '16px 0', color: '#94a3b8', fontSize: '14px' }}>
+          <div style={{ marginBottom: '8px' }}>
+            Showing the {visibleTests.length} closest of {tests.length} records
+          </div>
+          {visibleTests.length < tests.length && (
+            <button
+              type="button"
+              className={styles.retryBtn}
+              onClick={() => setShown({ list: tests, count: visibleCount + PAGE_SIZE })}
+            >
+              Show {Math.min(PAGE_SIZE, tests.length - visibleTests.length)} more
+            </button>
+          )}
+        </div>
+      )}
     </section>
   );
 };

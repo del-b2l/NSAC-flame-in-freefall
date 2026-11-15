@@ -27,7 +27,7 @@ export const SourceBadge: React.FC<SourceBadgeProps> = ({
       title={
         isSource
           ? 'Verified raw source data from official NASA databases/papers'
-          : 'Synthesized by AI (placeholder view)'
+          : 'Written by an AI model and checked against the NASA record'
       }
     >
       {isSource ? (
