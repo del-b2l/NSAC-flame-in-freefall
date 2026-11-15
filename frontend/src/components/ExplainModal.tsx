@@ -1,46 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import styles from './ExplainModal.module.css';
-import type { Habitat, TestRecord } from '../types';
+import type { Explanation, TestRecord } from '../types';
 import SourceBadge from './SourceBadge';
-import { fetchAiExplanation } from '../api/client';
+import { explainTest } from '../api/client';
 
 interface ExplainModalProps {
   test: TestRecord | null;
-  habitat: Habitat;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const ExplainModal: React.FC<ExplainModalProps> = ({
-  test,
-  habitat,
-  isOpen,
-  onClose,
-}) => {
-  const [explanation, setExplanation] = useState<string>('');
-  const [timestamp, setTimestamp] = useState<string>('');
+export const ExplainModal: React.FC<ExplainModalProps> = ({ test, isOpen, onClose }) => {
+  const [explanation, setExplanation] = useState<Explanation | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const testId = test?.id ?? null;
 
   useEffect(() => {
-    if (!isOpen || !test) return;
+    if (!isOpen || !testId) return;
 
     let isSubscribed = true;
-    fetchAiExplanation(test, habitat)
+    explainTest(testId)
       .then((res) => {
         if (isSubscribed) {
-          setExplanation(res.explanation);
-          setTimestamp(res.generatedAt);
+          setExplanation(res);
         }
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         if (isSubscribed) {
-          setExplanation(`Failed to generate explanation: ${String(err)}`);
+          setError(err instanceof Error ? err.message : String(err));
         }
       });
 
     return () => {
       isSubscribed = false;
     };
-  }, [isOpen, test, habitat]);
+  }, [isOpen, testId]);
 
   // Close on Escape key
   useEffect(() => {
@@ -55,6 +49,17 @@ export const ExplainModal: React.FC<ExplainModalProps> = ({
 
   if (!isOpen || !test) return null;
 
+  // The backend says whether the text was written by the AI model or is NASA's own.
+  const isAi = explanation ? explanation.generated || explanation.origin === 'cache' : true;
+  const badgeLabel = !explanation
+    ? '[Summary]'
+    : explanation.origin === 'cache'
+      ? '[Saved AI summary]'
+      : explanation.generated
+        ? '[AI-generated summary]'
+        : "[NASA's own result text]";
+  const sourceUrl = explanation?.source_url ?? test.source_url ?? null;
+
   return (
     <div
       className={styles.backdrop}
@@ -66,16 +71,12 @@ export const ExplainModal: React.FC<ExplainModalProps> = ({
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <div className={styles.titleArea}>
-            <SourceBadge kind="ai" size="md" />
+            <SourceBadge kind={isAi ? 'ai' : 'source'} size="md" />
             <h3 id="modal-title" className={styles.title}>
-              AI FIRE DYNAMICS SYNTHESIS
+              TEST SUMMARY
             </h3>
           </div>
-          <button
-            className={styles.closeBtn}
-            onClick={onClose}
-            aria-label="Close modal"
-          >
+          <button className={styles.closeBtn} onClick={onClose} aria-label="Close modal">
             ✕
           </button>
         </div>
@@ -84,46 +85,50 @@ export const ExplainModal: React.FC<ExplainModalProps> = ({
           <div className={styles.metaBox}>
             <div className={styles.metaRow}>
               <span className={styles.metaLabel}>Investigation Test:</span>
-              <strong>{test.investigation} ({test.id})</strong>
+              <strong>
+                {test.investigation} ({test.id})
+              </strong>
             </div>
             <div className={styles.metaRow}>
               <span className={styles.metaLabel}>Sample Material:</span>
               <span>{test.material ?? 'Not specified'}</span>
             </div>
-            <div className={styles.metaRow}>
-              <span className={styles.metaLabel}>Target Habitat:</span>
-              <span>
-                {habitat.name} (O₂ {habitat.oxygen_pct}%, {habitat.pressure_psi} psi)
-              </span>
-            </div>
           </div>
 
           <div className={styles.aiResponseBox}>
             <div className={styles.aiResponseHeader}>
-              <SourceBadge kind="ai" label="[AI-generated explanation here]" size="sm" />
-              {timestamp && (
-                <small style={{ color: '#6ee7b7', fontSize: '11px', fontFamily: 'monospace' }}>
-                  {new Date(timestamp).toLocaleTimeString()}
-                </small>
-              )}
+              <SourceBadge kind={isAi ? 'ai' : 'source'} label={badgeLabel} size="sm" />
             </div>
-            {!explanation ? (
+            {error ? (
+              <p className={styles.aiText} role="alert">
+                Could not load a summary for this test. ({error})
+              </p>
+            ) : !explanation ? (
               <p className={styles.aiText} style={{ color: '#94a3b8', fontStyle: 'italic' }}>
-                Analyzing microgravity oxygen and pressure boundary conditions...
+                Loading the summary...
               </p>
             ) : (
-              <p className={styles.aiText}>{explanation}</p>
+              <p className={styles.aiText}>{explanation.text}</p>
             )}
           </div>
 
           <p className={styles.footerNote}>
-            * AI-generated synthesis placeholder using record boundary parameters. All underlying test metrics derive from verified NASA telemetry citations.
+            {isAi
+              ? 'This summary was written by an AI model from the NASA record. Every number in it was checked against that record before it was shown. '
+              : "This is NASA's own text for the test, shown unchanged. "}
+            {sourceUrl ? (
+              <a href={sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#38bdf8' }}>
+                Open the NASA source
+              </a>
+            ) : (
+              'No source link is recorded for this test.'
+            )}
           </p>
         </div>
 
         <div className={styles.footer}>
           <button className={styles.actionBtn} onClick={onClose}>
-            Acknowledge &amp; Return
+            Close
           </button>
         </div>
       </div>
