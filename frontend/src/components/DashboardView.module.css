@@ -27,6 +27,48 @@
   z-index: 1;
 }
 
+.mainWrapper:not(.opening) > :not(.appHeader) {
+  animation: revealContent 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.mainWrapper:not(.opening) > :nth-child(3) {
+  animation-delay: 80ms;
+}
+
+.mainWrapper:not(.opening) > :nth-child(4) {
+  animation-delay: 160ms;
+}
+
+.mainWrapper:not(.opening) .appHeader > :not(.titleRow),
+.mainWrapper:not(.opening) .titleRow > :not(.titleWithIcon) {
+  animation: revealContent 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 100ms;
+}
+
+@keyframes revealContent {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mainWrapper:not(.opening) > :not(.appHeader),
+  .mainWrapper:not(.opening) .appHeader > :not(.titleRow),
+  .mainWrapper:not(.opening) .titleRow > :not(.titleWithIcon) {
+    animation: none;
+  }
+
+  .appHeader {
+    transition: none;
+  }
+}
+
 .appHeader {
   background: #090d16;
   border: 1px solid #1e293b;
@@ -38,6 +80,10 @@
   flex-direction: column;
   gap: 8px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  transition:
+    background-color 700ms ease,
+    border-color 700ms ease,
+    box-shadow 700ms ease;
 }
 
 .titleRow {

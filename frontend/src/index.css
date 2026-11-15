@@ -66,6 +66,10 @@ body {
   margin: 0;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 h1,
 h2 {
   font-family: var(--heading);
