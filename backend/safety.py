@@ -4,6 +4,11 @@ from backend.data_loader import load_habitats, load_investigations, load_safety
 
 router = APIRouter()
 
+# A nearest test whose oxygen is further than this from the habitat's is not
+# counted as a test of that habitat. The limit is the team's choice, not a
+# NASA value; the nearest test is still returned so the page can cite it.
+OXYGEN_CUTOFF_POINTS = 10.0
+
 
 def _gaps(test: dict, hab):
     o, p = test.get("oxygen_pct"), test.get("pressure_psi")
@@ -34,7 +39,8 @@ def safety_table():
                 cell |= {"state": "rule", "rule": rules[m["material"]]}
             elif best:
                 d, og, pg, t = best
-                cell |= {"state": "tested", "nearest_test": t,
+                state = "tested" if og <= OXYGEN_CUTOFF_POINTS else "missing"
+                cell |= {"state": state, "nearest_test": t,
                          "oxygen_gap": round(og, 2), "pressure_gap": round(pg, 2),
                          "distance": round(d, 2)}
             else:
@@ -42,7 +48,9 @@ def safety_table():
             cells.append(cell)
         rows.append({"material": m["material"], "cells": cells})
     return {"habitats": [h.name for h in habitats], "rows": rows,
-            "rules_read": bool(rules)}
+            "rules_read": bool(rules),
+            "oxygen_cutoff_points": OXYGEN_CUTOFF_POINTS,
+            "standard_rule": safety.get("standard_rule")}
 
 
 @router.get("/hardware")
