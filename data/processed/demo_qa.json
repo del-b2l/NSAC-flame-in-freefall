@@ -1,7 +1,7 @@
 [
   {
-    "question": "When was smoke detected in Saffire VI?",
-    "answer": "In Saffire VI, smoke was readily detected at 981 seconds [key-finding]."
+    "question": "When did the smoke detector reach its alarm threshold in Saffire VI?",
+    "answer": "In Saffire VI-3, a smoke detector reached a typical alarm threshold only at 981 seconds [key-finding]."
   },
   {
     "question": "What does the FLEX experiment aim to do?",
