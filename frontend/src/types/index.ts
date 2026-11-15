@@ -82,10 +82,21 @@ export interface SafetyRow {
   cells: SafetyCell[];
 }
 
+/** NASA's pass/fail rule, shown once under the table. */
+export interface StandardRule {
+  title: string;
+  text: string;
+  source_label: string;
+  source_url: string;
+}
+
 export interface SafetyTable {
   habitats: string[];
   rows: SafetyRow[];
   rules_read: boolean;
+  /** A nearest test further than this in oxygen is shown as "Not tested yet". */
+  oxygen_cutoff_points?: number;
+  standard_rule?: StandardRule | null;
 }
 
 /** Headline insight, as served by GET /insights. */

@@ -57,5 +57,11 @@
     }
   ],
   "rules": null,
-  "rules_note": "NASA-STD-6001B pass/fail rule not yet read by the team. Do not display Rule cells until this is filled in."
+  "rules_note": "No per-material pass/fail results are recorded, so no cell is labelled Rule. The NASA-STD-6001B Test 1 rule is given once in standard_rule.",
+  "standard_rule": {
+    "title": "NASA-STD-6001B, Test 1",
+    "text": "NASA's flammability test for materials burns five samples. A material passes only if no sample burns more than 15 cm (6 in) and no sample spreads the flame through burning debris, which is checked by whether a sheet of paper placed below ignites. One failed sample fails the material.",
+    "source_label": "NASA-STD-6001B with Change 3",
+    "source_url": "https://standards.nasa.gov/sites/default/files/standards/NASA/B-w/CHANGE-3/3/2025_06_25_NASA-STD-6001B_w_Change_3_FINAL_Admin-Change-FINAL.pdf"
+  }
 }

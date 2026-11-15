@@ -529,8 +529,32 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                     {cell.pressure_gap ?? '—'} psi
                                   </small>
                                 </>
+                              ) : cell.nearest_test ? (
+                                <>
+                                  <span className={styles.notTested}>Not tested yet</span>
+                                  <br />
+                                  <small style={{ color: '#94a3b8' }}>
+                                    Nearest reference:{' '}
+                                    {cell.nearest_test.source_url ? (
+                                      <a
+                                        href={cell.nearest_test.source_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{ color: '#38bdf8', textDecoration: 'underline' }}
+                                      >
+                                        {cell.nearest_test.test_id}
+                                      </a>
+                                    ) : (
+                                      cell.nearest_test.test_id
+                                    )}
+                                    {': '}
+                                    {cell.nearest_test.oxygen_pct ?? '—'}% O₂,{' '}
+                                    {cell.nearest_test.pressure_psi ?? '—'} psi, oxygen gap{' '}
+                                    {cell.oxygen_gap ?? '—'} points
+                                  </small>
+                                </>
                               ) : (
-                                <span className={styles.notTested}>Not tested</span>
+                                <span className={styles.notTested}>Not tested yet</span>
                               )}
                             </td>
                           ))}
@@ -540,12 +564,41 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   </table>
                 </div>
 
-                <p style={{ fontSize: '12px', color: '#64748b', marginTop: '12px' }}>
-                  {safety.rules_read
-                    ? 'Cells marked “Rule” cite the transcribed NASA-STD-6001B requirement instead of a nearest test.'
-                    : 'No pass/fail rule is applied: NASA-STD-6001B rules have not been transcribed for these materials, so every cell shows the nearest NASA test only.'}
-                  {' '}Standard references: NASA-STD-6001B Flammability Test Standard · NASA Physical Sciences Informatics (PSI).
-                </p>
+                {safety.oxygen_cutoff_points != null && (
+                  <p style={{ fontSize: '13px', color: '#94a3b8', marginTop: '12px' }}>
+                    A cell says “Not tested yet” when the nearest NASA test is more than{' '}
+                    {safety.oxygen_cutoff_points} oxygen points away from the habitat. That limit is this
+                    team’s choice, not a NASA value. The nearest test is still listed as a reference.
+                  </p>
+                )}
+
+                {safety.standard_rule && (
+                  <div
+                    role="note"
+                    style={{
+                      marginTop: '12px',
+                      padding: '12px 14px',
+                      border: '1px solid #1f2937',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      color: '#cbd5e1',
+                    }}
+                  >
+                    <strong>NASA’s pass/fail rule ({safety.standard_rule.title})</strong>
+                    <div style={{ marginTop: '4px' }}>{safety.standard_rule.text}</div>
+                    <div style={{ marginTop: '4px', fontSize: '13px', color: '#94a3b8' }}>
+                      This is a ground test. The table above does not say whether these materials passed it.{' '}
+                      <a
+                        href={safety.standard_rule.source_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: '#38bdf8', textDecoration: 'underline' }}
+                      >
+                        {safety.standard_rule.source_label}
+                      </a>
+                    </div>
+                  </div>
+                )}
               </>
             ) : (
               <p style={{ color: '#94a3b8', fontSize: '14px' }}>

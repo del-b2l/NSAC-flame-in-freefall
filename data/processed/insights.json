@@ -1,9 +1,9 @@
 {
   "key_finding": {
     "title": "981 seconds",
-    "text": "In Saffire VI, smoke was readily detected at 981 seconds, after most of the hazardous gas release had already happened.",
-    "source_label": "Saffire VI presentation, ICES 2024",
-    "source_url": "https://ntrs.nasa.gov/citations/20240007488",
+    "text": "In Saffire VI-3 (two-sided PMMA), a smoke detector reached a typical alarm threshold only at 981 seconds. By then most of the hazardous gas release had occurred.",
+    "source_label": "Saffire VI results paper, ICES 2024",
+    "source_url": "https://ntrs.nasa.gov/citations/20240002981",
     "status": "preliminary"
   },
   "gaps": [
@@ -14,8 +14,8 @@
     }
   ],
   "control_need": {
-    "text": "Detection came after most of the hazardous gas release, which suggests a need to detect gases earlier than smoke alone.",
+    "text": "The alarm threshold was reached after most of the hazardous gas release, which suggests a need to detect gases earlier than smoke alone.",
     "status": "team interpretation",
-    "basis_url": "https://ntrs.nasa.gov/citations/20240007488"
+    "basis_url": "https://ntrs.nasa.gov/citations/20240002981"
   }
 }
