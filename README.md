@@ -4,8 +4,25 @@ Team Tuesday Plan's submission for the NASA Space Apps Challenge 2026, Karachi.
 # Flame in Freefall: Fire Safety Dashboard
 
 ## Run it
-Backend: see backend/README (uvicorn backend.main:app --reload)
-Frontend: cd frontend && npm install && npm run dev
+Run the backend and frontend in separate terminals, starting from the repository root.
+
+**Backend (Command Prompt):**
+```bat
+backend\.venv\Scripts\activate.bat
+python -m pip install -r backend\requirements.txt
+python -m uvicorn backend.main:app --reload
+```
+
+The API is available at http://127.0.0.1:8000 (API docs: http://127.0.0.1:8000/docs).
+
+**Frontend (another terminal):**
+```bat
+cd frontend
+npm install
+npm run dev
+```
+
+Open the local URL printed by Vite, usually http://localhost:5173.
 
 ## Data
 The app reads `data/processed/tests.json`: 986 NASA tests, each with a source
