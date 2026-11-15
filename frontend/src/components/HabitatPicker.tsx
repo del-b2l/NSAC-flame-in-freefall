@@ -109,7 +109,7 @@ export const HabitatPicker: React.FC<HabitatPickerProps> = ({
               <span>HABITAT TARGET: {selectedHabitat.name.toUpperCase()}</span>
             </div>
             <div className={styles.telemetryDesc}>
-              {selectedHabitat.description || 'Configured atmospheric parameters'}
+              {selectedHabitat.note || 'Reference air for this habitat'}
             </div>
           </div>
         </div>
@@ -139,7 +139,21 @@ export const HabitatPicker: React.FC<HabitatPickerProps> = ({
 
         <div className={styles.sourceLine}>
           <SourceBadge kind="source" size="sm" />
-          <span>Source: {selectedHabitat.source || 'NASA OCHMO-TB-003 / Challenge brief'}</span>
+          <span>
+            {selectedHabitat.status ? `Values are ${selectedHabitat.status}. ` : ''}
+            {selectedHabitat.source_url ? (
+              <a
+                href={selectedHabitat.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#38bdf8', textDecoration: 'underline' }}
+              >
+                Open the source for these values
+              </a>
+            ) : (
+              'No source checked for these values.'
+            )}
+          </span>
         </div>
       </div>
     </section>
