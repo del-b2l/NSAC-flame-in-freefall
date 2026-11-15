@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import styles from './DashboardView.module.css';
-import type { Habitat, TestRecord } from '../types';
+import type { Habitat, Investigation, TestRecord } from '../types';
 import HabitatPicker from './HabitatPicker';
 import TestList from './TestList';
 import Legend from './Legend';
@@ -19,6 +19,42 @@ interface DashboardViewProps {
   onRetry: () => void;
 }
 
+const CATEGORY_ORDER = ['prevent', 'detect', 'put out', 'related'];
+
+const CATEGORY_LABELS: Record<string, string> = {
+  prevent: 'Prevent',
+  detect: 'Detect',
+  'put out': 'Put out',
+  related: 'Related',
+};
+
+function categoryLabel(category: string | null): string {
+  if (!category || !category.trim()) {
+    return 'Uncategorised';
+  }
+  return CATEGORY_LABELS[category.trim().toLowerCase()] ?? category.trim();
+}
+
+function recorded(value: string | null): string {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : 'Not recorded';
+}
+
+/** Prevent → Detect → Put out → Related, then by short name. */
+function sortInvestigations(list: Investigation[]): Investigation[] {
+  const rank = (category: string | null) => {
+    const index = CATEGORY_ORDER.indexOf((category ?? '').trim().toLowerCase());
+    return index === -1 ? CATEGORY_ORDER.length : index;
+  };
+  return [...list].sort((a, b) => {
+    const byCategory = rank(a.category) - rank(b.category);
+    if (byCategory !== 0) {
+      return byCategory;
+    }
+    return (a.acronym ?? a.name).localeCompare(b.acronym ?? b.name, 'en');
+  });
+}
+
 export const DashboardView: React.FC<DashboardViewProps> = ({
   habitats,
   selectedHabitat,
@@ -32,12 +68,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [pdaCategory, setPdaCategory] = useState<'Prevent' | 'Detect' | 'Put out'>('Prevent');
   const [explainTarget, setExplainTarget] = useState<TestRecord | null>(null);
   const [introComplete, setIntroComplete] = useState(false);
-  const { error: dataError } = useDashboardData();
+  const { investigations, loading: dataLoading, error: dataError } = useDashboardData();
   const titleGroupRef = useRef<HTMLDivElement>(null);
   const planetRef = useRef<HTMLImageElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
 
   const pdaFiltered = MOCK_INVESTIGATIONS.filter((inv) => inv.cat === pdaCategory);
+  const catalogue = investigations ? sortInvestigations(investigations) : null;
 
   useLayoutEffect(() => {
     if (introComplete) {
@@ -233,39 +270,64 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {activeTab === 'investigations' && (
         <section aria-labelledby="inv-heading">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <h2 id="inv-heading" style={{ margin: 0, fontSize: '20px', fontFamily: 'monospace' }}>
-              NASA MICROGRAVITY INVESTIGATIONS CATALOGUE
-            </h2>
+            <div>
+              <h2 id="inv-heading" style={{ margin: 0, fontSize: '20px', fontFamily: 'monospace' }}>
+                NASA MICROGRAVITY INVESTIGATIONS CATALOGUE
+              </h2>
+              <p style={{ margin: '4px 0 0', color: '#94a3b8', fontSize: '13px' }}>
+                {catalogue
+                  ? `${catalogue.length} investigations from the PSI Data Repository`
+                  : 'From the PSI Data Repository'}
+              </p>
+            </div>
             <SourceBadge kind="source" size="sm" />
           </div>
-          <div className={styles.invGrid}>
-            {MOCK_INVESTIGATIONS.map((inv) => (
-              <div key={inv.name} className={styles.invCard}>
-                <div className={styles.invCardHeader}>
-                  <h3 className={styles.invTitle}>
-                    <img src="/assets/icons/icon-flask.png" alt="" style={{ width: '16px', height: '16px', imageRendering: 'pixelated' }} />
-                    {inv.name}
-                  </h3>
-                  <span className={styles.categoryPill}>{inv.cat}</span>
+
+          {!catalogue ? (
+            <p style={{ color: '#94a3b8', fontSize: '14px' }}>
+              {dataLoading
+                ? 'Loading investigations…'
+                : 'Investigation catalogue unavailable. See the error above.'}
+            </p>
+          ) : catalogue.length === 0 ? (
+            <p style={{ color: '#94a3b8', fontSize: '14px' }}>
+              No investigations were returned.
+            </p>
+          ) : (
+            <div className={styles.invGrid}>
+              {catalogue.map((inv) => (
+                <div key={inv.id} className={styles.invCard}>
+                  <div className={styles.invCardHeader}>
+                    <div>
+                      <h3 className={styles.invTitle}>
+                        <img src="/assets/icons/icon-flask.png" alt="" style={{ width: '16px', height: '16px', imageRendering: 'pixelated' }} />
+                        {inv.acronym?.trim() || inv.name}
+                      </h3>
+                      {inv.acronym?.trim() && (
+                        <p className={styles.invFullName}>{inv.name}</p>
+                      )}
+                    </div>
+                    <span className={styles.categoryPill}>{categoryLabel(inv.category)}</span>
+                  </div>
+                  <div className={styles.invDetail}>
+                    <strong>Objective:</strong> {recorded(inv.objective)}
+                  </div>
+                  <div className={styles.invDetail}>
+                    <strong>Fuels:</strong> {recorded(inv.fuels)}
+                  </div>
+                  <div className={styles.invDetail}>
+                    <strong>Hardware:</strong> {recorded(inv.hardware_family ?? inv.hardware)}
+                  </div>
+                  <div className={styles.invDetail}>
+                    <strong>Sensors:</strong> {recorded(inv.sensors)}
+                  </div>
+                  <div className={styles.invDetail}>
+                    <strong>Key Variables:</strong> {recorded(inv.variables)}
+                  </div>
                 </div>
-                <div className={styles.invDetail}>
-                  <strong>Objective:</strong> {inv.objective}
-                </div>
-                <div className={styles.invDetail}>
-                  <strong>Fuels:</strong> {inv.fuels}
-                </div>
-                <div className={styles.invDetail}>
-                  <strong>Hardware:</strong> {inv.hw}
-                </div>
-                <div className={styles.invDetail}>
-                  <strong>Sensors:</strong> {inv.sensors}
-                </div>
-                <div className={styles.invDetail}>
-                  <strong>Key Variables:</strong> {inv.vars}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </section>
       )}
 

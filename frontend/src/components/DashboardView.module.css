@@ -305,6 +305,13 @@
   gap: 8px;
 }
 
+.invFullName {
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #94a3b8;
+}
+
 .categoryPill {
   background: #1e293b;
   color: #38bdf8;
